@@ -1,0 +1,103 @@
+// ============================================================================
+// SmartPRS — Type Definitions
+// ============================================================================
+
+export type Role = 'student' | 'faculty' | 'admin';
+export type Plan = 'free' | 'pro' | 'enterprise';
+export type AssessmentType = 'aptitude' | 'coding' | 'core' | 'soft_skills' | 'mock';
+export type Department = 'CS' | 'IS' | 'ECE';
+
+export interface Profile {
+  id: string;
+  name: string;
+  email: string;
+  role: Role;
+  college_id: string;
+  plan: Plan;
+  department?: Department;
+  created_at: string;
+}
+
+export interface StudentScores {
+  id: string;
+  student_id: string;
+  aptitude: number;
+  coding: number;
+  core_subjects: number;
+  soft_skills: number;
+  attendance: number;
+  mock_tests_completed: number;
+  backlogs: number;
+  updated_at: string;
+}
+
+export interface Assessment {
+  id: string;
+  student_id: string;
+  type: AssessmentType;
+  score: number;
+  taken_at: string;
+  notes: string;
+}
+
+export interface College {
+  id: string;
+  name: string;
+  plan: Plan;
+  student_count: number;
+  stripe_customer_id: string;
+  stripe_subscription_id: string;
+}
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  message: string;
+  read: boolean;
+  created_at: string;
+}
+
+// AI Engine Types
+export interface PRSResult {
+  score: number;
+  probability: string;
+  probabilityRange: string;
+  weakAreas: WeakArea[];
+  recommendations: Recommendation[];
+  companyTiers: string[];
+  rank?: number;
+  totalStudents?: number;
+}
+
+export interface WeakArea {
+  skill: string;
+  score: number;
+  severity: 'critical' | 'needs_improvement' | 'good';
+  recommendation: string;
+}
+
+export interface Recommendation {
+  icon: string;
+  title: string;
+  description: string;
+  impact: string;
+}
+
+export interface StudentWithScores extends Profile {
+  scores?: StudentScores;
+  prs?: PRSResult;
+}
+
+// Chat types for SmartCoach
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
+// Feature gate
+export interface FeatureGateResult {
+  allowed: boolean;
+  reason: string;
+}
