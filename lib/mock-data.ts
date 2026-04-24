@@ -108,11 +108,54 @@ export const PRS_HISTORY = [
 // Helper: Get all students with scores and PRS
 // ---------------------------------------------------------------------------
 export function getAllStudentsWithScores(): StudentWithScores[] {
-  return STUDENT_PROFILES.map(profile => {
+  const base = STUDENT_PROFILES.map(profile => {
     const scores = STUDENT_SCORES.find(s => s.student_id === profile.id);
     const prs = scores ? analyzeStudent(scores) : undefined;
     return { ...profile, scores, prs };
   });
+
+  if (typeof window === 'undefined') return base;
+
+  let currentAuthUser: { id: string; name: string; email: string; role: string } | null = null;
+  try {
+    currentAuthUser = JSON.parse(localStorage.getItem('smartprsCurrentAuthUser') || 'null') as {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    } | null;
+  } catch {
+    currentAuthUser = null;
+  }
+
+  const demoRole = localStorage.getItem('demoRole');
+  const user = currentAuthUser || {
+    id: 'demo-student',
+    name: localStorage.getItem('demoName') || 'Arjun Sharma',
+    email: localStorage.getItem('demoEmail') || 'student@demo.com',
+    role: demoRole || '',
+  };
+
+  if (user.role !== 'student') return base;
+
+  const currentStudent = base.find(s => s.email.toLowerCase() === user.email.toLowerCase());
+  if (currentStudent) return base;
+
+  // If NOT found: Inject into list
+  base.push({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: 'student',
+    college_id: 'college-001',
+    plan: 'free',
+    department: 'CS',
+    created_at: new Date().toISOString(),
+    scores: { id: `score-${user.id}`, student_id: user.id, aptitude: 0, coding: 0, core_subjects: 0, soft_skills: 0, attendance: 0, mock_tests_completed: 0, backlogs: 0, updated_at: new Date().toISOString() },
+    prs: { score: 0, probability: 'Low', probabilityRange: '0%', weakAreas: [], recommendations: [], companyTiers: [] }
+  });
+
+  return base;
 }
 
 // Batch average scores (for radar chart overlay)

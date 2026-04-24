@@ -52,7 +52,10 @@ export interface College {
 export interface Notification {
   id: string;
   user_id: string;
+  type?: string;
+  title?: string;
   message: string;
+  meet_link?: string;
   read: boolean;
   created_at: string;
 }
@@ -100,4 +103,56 @@ export interface ChatMessage {
 export interface FeatureGateResult {
   allowed: boolean;
   reason: string;
+}
+
+export interface StudentPortfolio {
+  studentId: string;
+  studentName: string;
+  linkedInUrl: string;
+  githubUsername: string;
+  topProjects: string[];
+  updatedAt: string;
+}
+
+export interface MeetingRecord {
+  id: string;
+  studentId: string;
+  studentName: string;
+  facultyName: string;
+  scheduledAt: string;
+  agenda: string;
+  notes: string;
+  meetingLink?: string;
+  outcome?: string;
+  createdAt: string;
+}
+
+export interface ViolationRecord {
+  id?: string;
+  student_id: string;
+  student_name: string;
+  exam_type: string;
+  violation_type: string;
+  message: string;
+  occurred_at: string;
+}
+
+export interface ImprovementSession {
+  id: string;
+  faculty_id: string;
+  faculty_name: string;
+  student_id: string;
+  student_name: string;
+  weak_area: string;
+  target_score: number;
+  current_score: number;
+  session_date: string;
+  meet_link?: string;
+  agenda: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  outcome_notes?: string;
+  outcome_rating?: 'Excellent' | 'Good' | 'Needs More Work';
+  score_after_session?: number;
+  materials?: string;
+  created_at: string;
 }

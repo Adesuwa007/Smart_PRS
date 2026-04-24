@@ -21,6 +21,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const persistAuthUser = (nextUser: AuthUser | null) => {
+    if (typeof window === 'undefined') return;
+    if (!nextUser) {
+      localStorage.removeItem('smartprsCurrentAuthUser');
+      return;
+    }
+    localStorage.setItem('smartprsCurrentAuthUser', JSON.stringify(nextUser));
+  };
+
   useEffect(() => {
     // Check demo login first
     const demoRole = localStorage.getItem('demoRole');
@@ -29,14 +38,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const demoPlan = localStorage.getItem('demoPlan');
 
     if (demoRole && demoName) {
-      setUser({
+      const demoUser: AuthUser = {
         id: 'demo-' + demoRole,
         name: demoName,
         email: demoEmail || '',
         role: demoRole as 'student' | 'faculty' | 'admin',
         plan: (demoPlan as 'free' | 'pro' | 'enterprise') || 'pro',
         isDemo: true,
-      });
+      };
+      setUser(demoUser);
+      persistAuthUser(demoUser);
+      // Write identity keys used by ExamProctor for violation logging
+      localStorage.setItem('userId', demoUser.id);
+      localStorage.setItem('userName', demoUser.name);
       setLoading(false);
       return;
     }
@@ -51,14 +65,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (profile) {
-          setUser({
+          const realUser: AuthUser = {
             id: session.user.id,
             name: profile.name,
             email: profile.email,
             role: profile.role,
             plan: profile.plan || 'free',
             isDemo: false,
-          });
+          };
+          setUser(realUser);
+          persistAuthUser(realUser);
         }
       }
       setLoading(false);
@@ -68,6 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event) => {
         if (event === 'SIGNED_OUT') {
           setUser(null);
+          persistAuthUser(null);
           localStorage.clear();
         }
       }
@@ -78,6 +95,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = async () => {
+    persistAuthUser(null);
     localStorage.clear();
     await supabase.auth.signOut();
     window.location.href = '/login';

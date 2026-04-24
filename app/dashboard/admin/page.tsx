@@ -6,8 +6,11 @@ import UpgradeModal from '@/components/modals/UpgradeModal';
 import { STUDENT_SCORES, STUDENT_PROFILES } from '@/lib/mock-data';
 import { calculateBatchStats } from '@/lib/ai-engine';
 import { getAllStudents, subscribeToStudentUpdates, type UnifiedStudent } from '@/lib/students-service';
-import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/auth-context';
+import { supabase } from '@/lib/supabase';
+import type { ViolationRecord } from '@/types';
+
+
 
 const today = new Date().toISOString().split('T')[0];
 
@@ -18,7 +21,7 @@ export default function AdminDashboard() {
 
   const [students, setStudents] = useState<UnifiedStudent[]>([]);
   const [loading, setLoading] = useState(true);
-  const [violations, setViolations] = useState<{ student_name: string; exam_type: string; message: string; occurred_at: string }[]>([]);
+  const [violations, setViolations] = useState<ViolationRecord[]>([]);
 
   const [search, setSearch] = useState('');
   const [sortCol, setSortCol] = useState('prs');
@@ -34,9 +37,82 @@ export default function AdminDashboard() {
     return () => { sub.unsubscribe(); };
   }, []);
 
+  const loadViolations = async () => {
+    let loaded: ViolationRecord[] = [];
+    
+    // Always read localStorage first
+    const localStr = localStorage.getItem('exam_violations');
+    const local: ViolationRecord[] = localStr ? JSON.parse(localStr) : [];
+    
+    // Try Supabase too
+    try {
+      const { data } = await supabase
+        .from('exam_violations')
+        .select('*')
+        .order('occurred_at', { ascending: false })
+        .limit(50);
+      
+      if (data && data.length > 0) {
+        // Merge both sources, deduplicate by student_name + occurred_at
+        loaded = [...data, ...local]
+          .filter((v, i, arr) => 
+            arr.findIndex(x => 
+              x.occurred_at === v.occurred_at && 
+              x.student_name === v.student_name
+            ) === i
+          )
+          .sort((a, b) => 
+            new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime()
+          );
+      } else {
+        loaded = local;
+      }
+    } catch {
+      loaded = local;
+    }
+    
+    setViolations(loaded);
+  };
+
+  const seedDemoViolations = () => {
+    const existing = localStorage.getItem('exam_violations');
+    if (!existing || JSON.parse(existing).length === 0) {
+      const demoViolations = [
+        {
+          student_id: 'demo-student',
+          student_name: 'Arjun Sharma',
+          exam_type: 'Aptitude Assessment',
+          violation_type: 'tab_switch',
+          message: 'Student switched tabs during exam',
+          occurred_at: new Date(Date.now() - 5 * 60000).toISOString()
+        },
+        {
+          student_id: 'demo-student-2', 
+          student_name: 'Kiran Kumar',
+          exam_type: 'Coding Assessment',
+          violation_type: 'right_click',
+          message: 'Right click attempted during exam',
+          occurred_at: new Date(Date.now() - 12 * 60000).toISOString()
+        },
+        {
+          student_id: 'demo-student-3',
+          student_name: 'Vijay Kumar', 
+          exam_type: 'Core Subjects Test',
+          violation_type: 'camera_denied',
+          message: 'Camera permission denied',
+          occurred_at: new Date(Date.now() - 28 * 60000).toISOString()
+        }
+      ];
+      localStorage.setItem('exam_violations', JSON.stringify(demoViolations));
+    }
+  };
+
+  // Poll every 5 seconds for real-time feel
   useEffect(() => {
-    supabase.from('exam_violations').select('*').order('occurred_at', { ascending: false }).limit(10)
-      .then(({ data }) => { if (data) setViolations(data); });
+    seedDemoViolations();
+    loadViolations();
+    const interval = setInterval(loadViolations, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const filtered = useMemo(() => {
@@ -166,27 +242,66 @@ export default function AdminDashboard() {
 
           {/* Violation Feed */}
           <div className="glass-card p-6">
-            <h3 className="text-sm font-semibold text-white mb-4">🔍 Exam Activity</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-white flex items-center">
+                🔍 Exam Activity
+                {violations.length > 0 && <span className="ml-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full animate-pulse">{violations.length}</span>}
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400">Total Today: {violations.length}</span>
+                <div className="flex items-center gap-1 bg-green-500/10 px-2 py-1 rounded">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
+                  <span className="text-[10px] text-green-400 uppercase tracking-widest font-bold">Live</span>
+                </div>
+              </div>
+            </div>
+            
             {violations.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-3xl mb-2">✅</p>
                 <p className="text-xs text-gray-500">No violations recorded</p>
               </div>
             ) : (
-              <div className="space-y-2">
+              <div className="space-y-3">
                 {violations.map((v, i) => {
-                  const age = Date.now() - new Date(v.occurred_at).getTime();
-                  const isRecent = age < 5 * 60 * 1000; // within 5 mins
+                  const ageMins = (Date.now() - new Date(v.occurred_at).getTime()) / 60000;
+                  const isVeryRecent = ageMins < 5;
+                  const isRecent = ageMins < 30;
+                  
+                  let badgeColor = "bg-gray-500/20 text-gray-400";
+                  let badgeText = v.violation_type;
+                  
+                  if (v.violation_type === 'tab_switch') {
+                    badgeColor = "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
+                    badgeText = "Tab Switch";
+                  } else if (v.violation_type === 'right_click') {
+                    badgeColor = "bg-orange-500/20 text-orange-400 border border-orange-500/30";
+                    badgeText = "Right Click";
+                  } else if (v.violation_type === 'camera_denied') {
+                    badgeColor = "bg-red-500/20 text-red-400 border border-red-500/30";
+                    badgeText = "Camera Denied";
+                  } else if (v.violation_type === 'copy_paste') {
+                    badgeColor = "bg-red-500/20 text-red-400 border border-red-500/30";
+                    badgeText = "Copy Attempt";
+                  }
+
+                  let timeAgo = "Just now";
+                  if (ageMins >= 1) timeAgo = `${Math.floor(ageMins)} minutes ago`;
+                  if (ageMins >= 60) timeAgo = `${Math.floor(ageMins / 60)} hours ago`;
+                  
                   return (
-                    <div key={i} className="p-2.5 rounded-xl bg-brand-dark/50 border border-brand-border/50">
-                      <div className="flex items-center gap-2 mb-0.5">
-                        <div className={`w-1.5 h-1.5 rounded-full ${isRecent ? 'bg-red-400' : 'bg-gray-600'}`} />
-                        <p className="text-xs text-white font-medium">{v.student_name}</p>
+                    <div key={i} className="p-3 rounded-xl bg-brand-surface/40 border border-white/5 flex items-start gap-3">
+                      <div className={`mt-1.5 w-2 h-2 rounded-full ${isVeryRecent ? 'bg-red-500 animate-pulse shadow-[0_0_8px_#ef4444]' : isRecent ? 'bg-orange-400' : 'bg-gray-600'}`} />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-white font-bold">{v.student_name || 'Unknown Student'}</p>
+                          <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded ${badgeColor}`}>
+                            {badgeText}
+                          </span>
+                        </div>
+                        <p className="text-xs text-brand-cyan mt-0.5">{v.exam_type}</p>
+                        <p className="text-xs text-gray-500 mt-1">{timeAgo}</p>
                       </div>
-                      <p className="text-[10px] text-gray-400 ml-3">{v.exam_type} · {v.message}</p>
-                      <p className="text-[10px] text-gray-600 ml-3">
-                        {new Date(v.occurred_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                      </p>
                     </div>
                   );
                 })}

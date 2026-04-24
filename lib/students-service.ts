@@ -88,10 +88,57 @@ export async function getAllStudents(): Promise<UnifiedStudent[]> {
     });
 
     // Real students first, then demo
-    return [...realStudents, ...demoStudents];
+    const merged = [...realStudents, ...demoStudents];
+    return ensureLoggedInStudent(merged);
   } catch {
-    return demoStudents;
+    return ensureLoggedInStudent(demoStudents);
   }
+}
+
+function ensureLoggedInStudent(students: UnifiedStudent[]): UnifiedStudent[] {
+  if (typeof window === 'undefined') return students;
+
+  let currentAuthUser: { id: string; name: string; email: string; role: string } | null = null;
+  try {
+    currentAuthUser = JSON.parse(localStorage.getItem('smartprsCurrentAuthUser') || 'null') as {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    } | null;
+  } catch {
+    currentAuthUser = null;
+  }
+
+  const demoRole = localStorage.getItem('demoRole');
+  const authUser = currentAuthUser || {
+    id: 'demo-student',
+    name: localStorage.getItem('demoName') || 'Student',
+    email: localStorage.getItem('demoEmail') || 'student@demo.com',
+    role: demoRole || '',
+  };
+
+  const hasByName = students.some(s => s.name.toLowerCase() === authUser.name.toLowerCase());
+  const hasByEmail = students.some(s => s.email.toLowerCase() === authUser.email.toLowerCase());
+  const hasById = students.some(s => s.id === authUser.id);
+
+  if (authUser.role === 'student' && !hasByName && !hasByEmail && !hasById) {
+    const arjun = students.find(s => s.name === 'Arjun Sharma');
+    const fallback = arjun || students[0];
+    if (!fallback) return students;
+    return [
+      {
+        ...fallback,
+        id: authUser.id || 'demo-student',
+        name: authUser.name || fallback.name,
+        email: authUser.email || fallback.email,
+        isDemo: authUser.id.startsWith('demo-') || fallback.isDemo,
+      },
+      ...students,
+    ];
+  }
+
+  return students;
 }
 
 export function subscribeToStudentUpdates(callback: () => void) {

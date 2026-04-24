@@ -36,17 +36,46 @@ export default function ExamProctor({ children, examType, timeLeft, onTerminate 
     setTimeout(() => setWarning(''), 4000);
   }, []);
 
-  const logViolation = useCallback((type: string, message: string) => {
+  const logViolation = useCallback(async (violationType: string) => {
+    // Use localStorage identity keys for consistent demo identity
+    const studentId = localStorage.getItem('userId') || user?.id || 'demo-student';
+    const studentName = localStorage.getItem('userName') || user?.name || 'Arjun Sharma';
+
+    let message = 'Violation recorded';
+    if (violationType === 'tab_switch') message = 'Student switched tabs during exam';
+    if (violationType === 'right_click') message = 'Right click attempted during exam';
+    if (violationType === 'camera_denied') message = 'Camera permission denied';
+    if (violationType === 'copy_paste') message = 'Copy/paste attempted during exam';
+    if (violationType === 'keyboard_shortcut') message = 'Keyboard shortcut blocked';
+    if (violationType === 'window_blur') message = 'Browser focus lost';
+
+    const violation = {
+      student_id: studentId,
+      student_name: studentName,
+      exam_type: examType,
+      violation_type: violationType,
+      message,
+      occurred_at: new Date().toISOString()
+    };
+    
+    // ALWAYS write to exam_violations immediately (admin reads this key)
+    const existing = JSON.parse(
+      localStorage.getItem('exam_violations') || '[]'
+    );
+    existing.unshift(violation);
+    localStorage.setItem(
+      'exam_violations', 
+      JSON.stringify(existing.slice(0, 100))
+    );
+    
+    // Then try Supabase
     try {
-      supabase.from('exam_violations').insert({
-        student_id: user?.id || 'unknown',
-        student_name: user?.name || 'Unknown',
-        exam_type: examType,
-        violation_type: type,
-        message,
-        occurred_at: new Date().toISOString(),
-      });
-    } catch { /* non-critical */ }
+      await supabase
+        .from('exam_violations')
+        .insert(violation);
+    } catch {
+      // localStorage fallback already saved
+    }
   }, [user, examType]);
 
   // ── 1. Mobile detection (runs immediately on mount) ─────────────────────
@@ -72,7 +101,7 @@ export default function ExamProctor({ children, examType, timeLeft, onTerminate 
       .catch(() => {
         // Camera denied: warn but don't block (not all setups have cameras)
         setCameraError(true);
-        logViolation('camera_denied', 'Camera permission was denied or unavailable');
+        logViolation('camera_denied');
       });
     return () => { if (stream) stream.getTracks().forEach(t => t.stop()); };
   }, [examBlocked, logViolation]);
@@ -82,7 +111,7 @@ export default function ExamProctor({ children, examType, timeLeft, onTerminate 
     const block = (e: Event) => {
       e.preventDefault();
       showWarning('⚠️ Right-click is disabled during the exam.');
-      logViolation('right_click', 'Right-click attempted');
+      logViolation('right_click');
     };
     document.addEventListener('contextmenu', block);
     setRightClickBlocked(true);
@@ -92,20 +121,33 @@ export default function ExamProctor({ children, examType, timeLeft, onTerminate 
   // ── 4. Keyboard shortcuts blocked IMMEDIATELY ───────────────────────────
   useEffect(() => {
     const blockKeys = (e: KeyboardEvent) => {
+      const lowerKey = e.key.toLowerCase();
+      const isCopyPaste = e.ctrlKey && ['c', 'v'].includes(lowerKey);
       const blocked =
-        (e.ctrlKey && ['c', 'v', 'u', 'a', 's'].includes(e.key.toLowerCase())) ||
+        (e.ctrlKey && ['c', 'v', 'u', 'a', 's'].includes(lowerKey)) ||
         (e.altKey && e.key === 'Tab') ||
         e.key === 'F12' ||
         e.key === 'PrintScreen';
       if (blocked) {
         e.preventDefault();
         showWarning(`⚠️ Keyboard shortcut blocked: ${e.key.toUpperCase()}`);
-        logViolation('keyboard_shortcut', `Blocked key: ${e.key}`);
+        logViolation(isCopyPaste ? 'copy_paste' : 'keyboard_shortcut');
       }
     };
     document.addEventListener('keydown', blockKeys);
     setKeyboardBlocked(true);
-    return () => document.removeEventListener('keydown', blockKeys);
+
+    const blockCopy = (e: ClipboardEvent) => {
+      e.preventDefault();
+      logViolation('copy_paste');
+      showWarning('⚠️ Copying is disabled during the exam.');
+    };
+    document.addEventListener('copy', blockCopy);
+
+    return () => {
+      document.removeEventListener('keydown', blockKeys);
+      document.removeEventListener('copy', blockCopy);
+    };
   }, [showWarning, logViolation]);
 
   // ── 5. Tab switch detection (only after exam starts) ────────────────────
@@ -115,7 +157,7 @@ export default function ExamProctor({ children, examType, timeLeft, onTerminate 
       if (document.hidden) {
         setTabSwitchCount(prev => {
           const newCount = prev + 1;
-          logViolation('tab_switch', `Tab switched — violation ${newCount}/3`);
+          logViolation('tab_switch');
           if (newCount === 1) showWarning('⚠️ Warning 1/3: Do not switch tabs during the exam!');
           else if (newCount === 2) showWarning('⚠️ Warning 2/3: One more violation will terminate the exam!');
           else if (newCount >= 3) onTerminate('Exam terminated: 3 tab-switch violations recorded.');
@@ -125,18 +167,18 @@ export default function ExamProctor({ children, examType, timeLeft, onTerminate 
     };
     document.addEventListener('visibilitychange', handleVisibility);
     return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [examStarted, logViolation, showWarning, onTerminate]);
+  }, [examStarted, showWarning, onTerminate, logViolation]);
 
   // ── 6. Window/app focus loss (only after exam starts) ───────────────────
   useEffect(() => {
     if (!examStarted) return;
     const handleBlur = () => {
-      logViolation('window_blur', 'Browser window lost focus to another application');
+      logViolation('window_blur');
       showWarning('⚠️ Browser focus lost! Return to the exam immediately.');
     };
     window.addEventListener('blur', handleBlur);
     return () => window.removeEventListener('blur', handleBlur);
-  }, [examStarted, logViolation, showWarning]);
+  }, [examStarted, showWarning, logViolation]);
 
   // ── Blocked screen ───────────────────────────────────────────────────────
   if (examBlocked) {

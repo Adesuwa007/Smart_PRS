@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 
 interface NavItem { label: string; href: string; icon: string; }
@@ -35,6 +35,7 @@ export default function DashboardLayout({ role, children }: Props) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [unreadViolations, setUnreadViolations] = useState(0);
 
   // Real user identity from AuthContext
   const { user, logout } = useAuth();
@@ -43,6 +44,16 @@ export default function DashboardLayout({ role, children }: Props) {
   const userPlan = user?.plan || 'free';
 
   const nav = navByRole[displayRole] || navByRole[role] || navByRole.student;
+
+  useEffect(() => {
+    const refresh = () => {
+      const count = Number(localStorage.getItem('smartprsUnreadViolationCount') || '0');
+      setUnreadViolations(Number.isFinite(count) ? count : 0);
+    };
+    refresh();
+    const timer = setInterval(refresh, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-brand-dark gradient-mesh flex">
@@ -66,6 +77,12 @@ export default function DashboardLayout({ role, children }: Props) {
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}>
               <span>{item.icon}</span>{item.label}
+              {displayRole === 'admin' && item.href === '/dashboard/admin' && unreadViolations > 0 && (
+                <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-red-500/20 px-2 py-0.5 text-[10px] text-red-300 border border-red-400/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                  {unreadViolations}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
@@ -96,7 +113,9 @@ export default function DashboardLayout({ role, children }: Props) {
             <div className="relative">
               <button onClick={() => setNotifOpen(!notifOpen)} className="relative w-9 h-9 rounded-xl bg-brand-surface border border-brand-border flex items-center justify-center text-sm hover:border-brand-cyan/30 transition">
                 🔔
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-cyan rounded-full text-[9px] font-bold text-white flex items-center justify-center">2</span>
+                <span className={`absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold text-white flex items-center justify-center ${unreadViolations > 0 ? 'bg-red-500 animate-pulse' : 'bg-brand-cyan'}`}>
+                  {unreadViolations > 0 ? unreadViolations : 2}
+                </span>
               </button>
               {notifOpen && (
                 <div className="absolute right-0 mt-2 w-72 glass-card p-3 space-y-2 z-50" style={{ borderRadius: '16px' }}>
