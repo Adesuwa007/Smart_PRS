@@ -50,6 +50,24 @@ export default function StudentDashboard() {
   };
 
   const pointsToProduct = Math.max(0, 80 - prs.score);
+  const [animatedScore, setAnimatedScore] = useState(0);
+  const [animatedRank, setAnimatedRank] = useState(0);
+
+  useEffect(() => {
+    const duration = 1100;
+    const start = performance.now();
+
+    const step = (time: number) => {
+      const progress = Math.min(1, (time - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedScore(Math.round(prs.score * eased));
+      setAnimatedRank(Math.max(1, Math.round(rank * eased)));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+
+    const frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [prs.score, rank]);
 
   return (
     <DashboardLayout role="student" userName={displayName}>
@@ -57,8 +75,8 @@ export default function StudentDashboard() {
         {/* Welcome + Psychology Microcopy */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Welcome back, {firstName} 👋</h1>
-            <p className="text-sm text-gray-400 mt-1">
+            <h1 className="text-3xl font-black tracking-tight text-white">Welcome back, {firstName} 👋</h1>
+            <p className="text-slate-500 text-sm mt-1">
               {prs.score >= 80
                 ? `You're in the top ${Math.round((rank / allStudents.length) * 100)}% of your batch! 🏆`
                 : `You're ${pointsToProduct.toFixed(0)} points away from Product Tier — keep pushing! 🚀`}
@@ -74,18 +92,20 @@ export default function StudentDashboard() {
 
         {/* Top Row — 3 Stat Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="stat-card flex items-center justify-between">
-            <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">PRS Score</p>
-              <p className="text-sm text-gray-400 mt-2">Placement Readiness</p>
+          <div className="stat-card reveal-up md:col-span-2 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="relative">
+              <p className="text-xs text-slate-500 uppercase tracking-wider mb-3">PRS Score</p>
+              <p className="text-8xl font-black tracking-tight text-white leading-none">{animatedScore}</p>
+              <p className="text-slate-500 text-sm mt-3">Placement Readiness Score</p>
+              <span className="badge score-status-badge mt-4 badge-cyan">{prs.probability} Momentum</span>
             </div>
-            <PRSGauge score={prs.score} size={120} />
+            <PRSGauge score={prs.score} size={170} />
           </div>
 
-          <div className="stat-card">
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Placement Probability</p>
+          <div className="stat-card reveal-up">
+            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Placement Probability</p>
             <div className="flex items-center gap-3">
-              <span className={`text-3xl font-extrabold ${prs.probability === 'High' ? 'text-emerald-400' : prs.probability === 'Medium' ? 'text-yellow-400' : 'text-red-400'}`}>
+              <span className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
                 {prs.probabilityRange}
               </span>
             </div>
@@ -97,13 +117,13 @@ export default function StudentDashboard() {
             </button>
           </div>
 
-          <div className="stat-card">
-            <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Batch Rank</p>
+          <div className="stat-card reveal-up">
+            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Batch Rank</p>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-extrabold text-white">{rank}</span>
-              <span className="text-gray-500 text-lg">/ {allStudents.length}</span>
+              <span className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">{animatedRank}</span>
+              <span className="text-slate-500 text-lg">/ {allStudents.length}</span>
             </div>
-            <p className="text-xs text-gray-400 mt-2">students in your batch</p>
+            <p className="text-xs text-slate-500 mt-2">students in your batch</p>
             <p className="text-xs text-brand-cyan mt-1 font-semibold">Top {Math.round((rank / allStudents.length) * 100)}% 🎯</p>
           </div>
         </div>
@@ -124,7 +144,7 @@ export default function StudentDashboard() {
         </div>
 
         {/* Motivational Footer */}
-        <div className="glass-card p-4 flex items-center justify-between">
+        <div className="glass-card reveal-up p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">💡</span>
             <div>

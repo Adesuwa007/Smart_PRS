@@ -45,7 +45,7 @@ export default function DashboardLayout({ role, children }: Props) {
   const nav = navByRole[displayRole] || navByRole[role] || navByRole.student;
 
   return (
-    <div className="min-h-screen bg-brand-dark flex">
+    <div className="min-h-screen bg-brand-dark gradient-mesh flex">
       {/* Mobile overlay */}
       {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />}
 
@@ -60,14 +60,18 @@ export default function DashboardLayout({ role, children }: Props) {
         <nav className="px-3 space-y-1">
           {nav.map(item => (
             <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${pathname === item.href ? 'bg-brand-cyan/10 text-brand-cyan font-semibold' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}>
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-300 ${
+                pathname === item.href
+                  ? 'bg-gradient-to-r from-cyan-500/85 to-violet-500/85 text-white font-semibold shadow-[0_0_25px_rgba(6,182,212,0.25)]'
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+              }`}>
               <span>{item.icon}</span>{item.label}
             </Link>
           ))}
         </nav>
         <div className="absolute bottom-6 left-0 right-0 px-5">
           <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-dark/50 border border-brand-border/50">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-cyan/30 to-brand-purple/30 flex items-center justify-center text-xs font-bold text-white">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-cyan/30 to-brand-purple/30 ring-1 ring-cyan-400/60 shadow-[0_0_14px_rgba(6,182,212,0.45)] flex items-center justify-center text-xs font-bold text-white">
               {displayName[0] || 'U'}
             </div>
             <div className="flex-1 min-w-0">
@@ -82,7 +86,7 @@ export default function DashboardLayout({ role, children }: Props) {
       {/* Main */}
       <div className="flex-1 md:ml-[260px]">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-brand-dark/80 backdrop-blur-lg border-b border-brand-border px-6 py-3 flex items-center justify-between">
+        <header className="sticky top-0 z-20 bg-[#050508]/75 backdrop-blur-xl border-b border-white/10 px-6 py-3 flex items-center justify-between">
           <button onClick={() => setSidebarOpen(true)} className="md:hidden text-gray-400 hover:text-white text-xl">☰</button>
           <div className="hidden md:block" />
           <div className="flex items-center gap-3">
