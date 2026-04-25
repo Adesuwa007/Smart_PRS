@@ -38,6 +38,10 @@ export default function SignupPage() {
     }
 
     // Step 2: Insert into profiles table
+    // Generate a temporary USN for signup (Ideally this would be checked against existing count on server)
+    const timestamp = Date.now().toString().slice(-3);
+    const generatedUsn = `4VV24${department === 'ECE' ? 'EC' : (department || 'CS')}${timestamp}`;
+
     const { error: profileError } = await supabase.from('profiles').insert({
       id: data.user.id,
       name,
@@ -45,6 +49,7 @@ export default function SignupPage() {
       role,
       college_id: 'vvce-mysuru',
       plan: 'free',
+      usn: generatedUsn,
     });
 
     if (profileError) {

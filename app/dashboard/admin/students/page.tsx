@@ -49,9 +49,11 @@ export default function AdminStudentsPage() {
 
   const handleAddStudent = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaving(true);
+    // Step 1: Generate USN based on current count + 1
+    const nextIndex = allStudents.length + 1;
+    const generatedUsn = `4VV24${form.department === 'ECE' ? 'EC' : (form.department || 'CS')}${String(nextIndex).padStart(3, '0')}`;
 
-    // Step 1: Insert into profiles table
+    // Step 2: Insert into profiles table
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .insert({
@@ -60,12 +62,13 @@ export default function AdminStudentsPage() {
         role: 'student',
         college_id: 'vvce-mysuru',
         plan: 'free',
+        usn: generatedUsn,
       })
       .select()
       .single();
 
     if (!profileError && profile) {
-      // Step 2: Insert into student_scores using returned profile.id
+      // Step 3: Insert into student_scores using returned profile.id
       const { error: scoresError } = await supabase.from('student_scores').insert({
         student_id: profile.id,
         aptitude: Number(form.aptitude),
@@ -79,40 +82,13 @@ export default function AdminStudentsPage() {
 
       if (!scoresError) {
         toast.success('Student added successfully!');
+        // Refresh list
+        getAllStudents().then(setAllStudents);
       } else {
         toast('Student profile saved, scores failed: ' + scoresError.message, { icon: '⚠️' });
       }
-
-      // Add to local state using Supabase-returned profile.id
-      const scoreRow = {
-        id: crypto.randomUUID(),
-        student_id: profile.id,
-        aptitude: form.aptitude,
-        coding: form.coding,
-        core_subjects: form.core_subjects,
-        soft_skills: form.soft_skills,
-        attendance: form.attendance,
-        backlogs: 0,
-        mock_tests_completed: 0,
-        updated_at: new Date().toISOString(),
-      };
-      const prs = analyzeStudent(scoreRow);
-      setExtraStudents(prev => [...prev, {
-        id: profile.id,
-        name: form.name,
-        email: `${form.name.toLowerCase().replace(/\s+/g, '')}@vvce.ac.in`,
-        role: 'student' as const,
-        college_id: 'vvce-mysuru',
-        plan: 'free' as const,
-        department: form.department as 'CS' | 'IS' | 'ECE',
-        created_at: new Date().toISOString(),
-        scores: scoreRow,
-        prs,
-      }]);
     } else {
-      // Fallback: add to local state only
-      // Re-fetch since we added a local extra
-      getAllStudents().then(setAllStudents);
+      toast.error('Failed to create student profile: ' + profileError?.message);
     }
 
     setForm(BLANK);

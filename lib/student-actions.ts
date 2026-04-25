@@ -45,7 +45,7 @@ export async function fetchAllStudentsServer(): Promise<UnifiedStudent[]> {
         backlogs: sc.backlogs || 0,
         prs: prsScore,
         status: analysis.probability,
-        usn: `4VV24${dept === 'ECE' ? 'EC' : dept}${String(i + 1).padStart(3, '0')}`,
+        usn: profile.usn || `4VV24${dept === 'ECE' ? 'EC' : dept}${String(i + 1).padStart(3, '0')}`,
         plan: profile.plan || 'free',
         isDemo: false,
         joinedAt: profile.created_at?.split('T')[0] || today,
