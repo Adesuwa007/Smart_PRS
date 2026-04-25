@@ -2,11 +2,16 @@
 import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import UpgradeModal from '@/components/modals/UpgradeModal';
-import { getAllStudentsWithScores } from '@/lib/mock-data';
+import { getAllStudents, type UnifiedStudent } from '@/lib/students-service';
+import { useEffect } from 'react';
 
 export default function AdminExportPage() {
   const [upgradeOpen, setUpgradeOpen] = useState(false);
-  const allStudents = getAllStudentsWithScores();
+  const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
+
+  useEffect(() => {
+    getAllStudents().then(setAllStudents);
+  }, []);
 
   const preview = allStudents.slice(0, 5);
 
@@ -60,7 +65,7 @@ export default function AdminExportPage() {
               <div className="text-[#00C9A7] font-black mb-3">name,department,prs,aptitude,coding,core_subjects,soft_skills,attendance,backlogs,tier</div>
               {preview.map(s => (
                 <div key={s.id} className="text-[#1A1035] font-medium leading-relaxed">
-                  {s.name},{s.department},{s.prs?.score.toFixed(1)},{s.scores?.aptitude},{s.scores?.coding},{s.scores?.core_subjects},{s.scores?.soft_skills},{s.scores?.attendance},{s.scores?.backlogs},&quot;{s.prs?.companyTiers[0]}&quot;
+                  {s.name},{s.department},{(s.prs || 0).toFixed(1)},{s.aptitude},{s.coding},{s.core_subjects},{s.soft_skills},{s.attendance},{s.backlogs},&quot;{s.status || 'N/A'}&quot;
                 </div>
               ))}
               <div className="text-[#1A1035]/40 font-bold mt-4">... {allStudents.length - 5} more rows (upgrade to export all)</div>

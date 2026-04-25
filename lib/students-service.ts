@@ -56,7 +56,8 @@ export async function getAllStudents(): Promise<UnifiedStudent[]> {
       .eq('role', 'student')
       .order('created_at', { ascending: false });
 
-    if (!profiles || profiles.length === 0) return demoStudents;
+    if (!profiles) return ensureLoggedInStudent(demoStudents);
+    if (profiles.length === 0) return ensureLoggedInStudent([]);
 
     const { data: scores } = await supabase
       .from('student_scores')

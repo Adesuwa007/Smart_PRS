@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getAllStudentsWithScores } from '@/lib/mock-data';
+import { getAllStudents, type UnifiedStudent } from '@/lib/students-service';
 import { supabase } from '@/lib/supabase';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -14,9 +14,15 @@ const TOPICS = [
 ];
 
 export default function SoftSkillsAssessmentPage() {
-  const allStudents = getAllStudentsWithScores();
-  
-  const [selectedId, setSelectedId] = useState(allStudents[0]?.id || '');
+  const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
+  const [selectedId, setSelectedId] = useState('');
+
+  useEffect(() => {
+    getAllStudents().then(data => {
+      setAllStudents(data);
+      if (data.length > 0) setSelectedId(data[0].id);
+    });
+  }, []);
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [topic, setTopic] = useState(TOPICS[0]);
   

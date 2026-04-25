@@ -1,10 +1,11 @@
 'use client';
 import { useMemo, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getAllStudentsWithScores } from '@/lib/mock-data';
+import { getAllStudents, subscribeToStudentUpdates, type UnifiedStudent } from '@/lib/students-service';
 import { getStudentPortfolio } from '@/lib/client-data';
 import { analyzeStudent } from '@/lib/ai-engine';
 import { useAuth } from '@/lib/auth-context';
+import { useEffect } from 'react';
 
 const PRS_FILTERS = [
   { key: 'all', label: 'All' },
@@ -18,38 +19,36 @@ type PrsFilter = (typeof PRS_FILTERS)[number]['key'];
 
 export default function FacultyStudentsPage() {
   const { user } = useAuth();
-  const allStudents = useMemo(() => {
-    const base = getAllStudentsWithScores();
-    if (!user || user.role !== 'student') return base;
-    const exists = base.some(s => s.name.toLowerCase() === user.name.toLowerCase() || s.email.toLowerCase() === user.email.toLowerCase());
-    if (exists) return base;
-    const seed = base.find(s => s.name === 'Student') || base[0];
-    if (!seed) return base;
-    return [{ ...seed, id: user.id, name: user.name, email: user.email }, ...base];
-  }, [user]);
+  const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllStudents().then(data => { setAllStudents(data); setLoading(false); });
+    const sub = subscribeToStudentUpdates(() => getAllStudents().then(setAllStudents));
+    return () => { sub.unsubscribe(); };
+  }, []);
   const [search, setSearch] = useState('');
   const [dept, setDept] = useState('all');
   const [prsFilter, setPrsFilter] = useState<PrsFilter>('all');
   const [selectedStudentId, setSelectedStudentId] = useState<string | null>(null);
 
   const selectedStudent = selectedStudentId ? allStudents.find(s => s.id === selectedStudentId) : null;
-  const selectedScores = selectedStudent?.scores;
   const selectedPortfolio = selectedStudent ? getStudentPortfolio(selectedStudent.id, selectedStudent.name) : null;
 
   const draggingSkill = useMemo(() => {
-    if (!selectedScores) return null;
+    if (!selectedStudent) return null;
     const ordered = [
-      { skill: 'Coding', value: selectedScores.coding },
-      { skill: 'Aptitude', value: selectedScores.aptitude },
-      { skill: 'Core Subjects', value: selectedScores.core_subjects },
-      { skill: 'Soft Skills', value: selectedScores.soft_skills },
-      { skill: 'Attendance', value: selectedScores.attendance },
+      { skill: 'Coding', value: selectedStudent.coding },
+      { skill: 'Aptitude', value: selectedStudent.aptitude },
+      { skill: 'Core Subjects', value: selectedStudent.core_subjects },
+      { skill: 'Soft Skills', value: selectedStudent.soft_skills },
+      { skill: 'Attendance', value: selectedStudent.attendance },
     ].sort((a, b) => a.value - b.value);
     return ordered[0];
-  }, [selectedScores]);
+  }, [selectedStudent]);
 
   const filtered = allStudents.filter(s => {
-    const score = s.prs?.score || 0;
+    const score = s.prs || 0;
     const prsMatch =
       prsFilter === 'all' ||
       (prsFilter === 'low' && score < 50) ||
@@ -112,7 +111,7 @@ export default function FacultyStudentsPage() {
             </thead>
             <tbody className="divide-y-2 divide-[#1A1035]/10">
               {filtered.map(s => {
-                const prsScore = s.prs?.score || 0;
+                const prsScore = s.prs || 0;
                 return (
                   <tr 
                     key={s.id} 
@@ -138,12 +137,12 @@ export default function FacultyStudentsPage() {
                         {prsScore.toFixed(1)}
                       </button>
                     </td>
-                    <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.coding}</td>
-                    <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.aptitude}</td>
-                    <td className={`py-4 px-4 font-black ${(s.scores?.attendance || 0) >= 75 ? 'text-[#00C9A7]' : 'text-[#FF4D6D]'}`}>
-                      {s.scores?.attendance}%
+                    <td className="py-4 px-4 text-[#1A1035] font-bold">{s.coding}</td>
+                    <td className="py-4 px-4 text-[#1A1035] font-bold">{s.aptitude}</td>
+                    <td className={`py-4 px-4 font-black ${(s.attendance || 0) >= 75 ? 'text-[#00C9A7]' : 'text-[#FF4D6D]'}`}>
+                      {s.attendance}%
                     </td>
-                    <td className="py-4 px-4">{(s.scores?.backlogs || 0) > 0 ? <span className="bg-[#FF4D6D] text-white border-2 border-[#1A1035] px-2 py-0.5 rounded text-xs font-black shadow-[2px_2px_0px_#1A1035]">{s.scores?.backlogs}</span> : <span className="text-[#1A1035]/50 font-bold">0</span>}</td>
+                    <td className="py-4 px-4">{(s.backlogs || 0) > 0 ? <span className="bg-[#FF4D6D] text-white border-2 border-[#1A1035] px-2 py-0.5 rounded text-xs font-black shadow-[2px_2px_0px_#1A1035]">{s.backlogs}</span> : <span className="text-[#1A1035]/50 font-bold">0</span>}</td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 text-xs font-black uppercase tracking-widest border-2 border-[#1A1035] rounded shadow-[2px_2px_0px_#1A1035] whitespace-nowrap ${prsScore >= 75 ? 'bg-white text-[#00C9A7]' : prsScore >= 50 ? 'bg-[#FFB347] text-[#1A1035]' : 'bg-[#FF4D6D] text-white'}`}>
                         {prsScore >= 75 ? 'Ready' : prsScore >= 50 ? 'On Track' : 'At Risk'}
@@ -171,11 +170,11 @@ export default function FacultyStudentsPage() {
 
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                 {[
-                  ['Coding', selectedScores.coding],
-                  ['Aptitude', selectedScores.aptitude],
-                  ['Core', selectedScores.core_subjects],
-                  ['Soft', selectedScores.soft_skills],
-                  ['Attendance', selectedScores.attendance],
+                  ['Coding', selectedStudent.coding],
+                  ['Aptitude', selectedStudent.aptitude],
+                  ['Core', selectedStudent.core_subjects],
+                  ['Soft', selectedStudent.soft_skills],
+                  ['Attendance', selectedStudent.attendance],
                 ].map(([label, value]) => (
                   <div key={label} className="p-3 rounded-xl bg-[#F8F7FF] border-2 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] text-center">
                     <p className="text-[10px] font-black text-[#1A1035]/60 uppercase tracking-widest mb-1">{label}</p>
@@ -191,7 +190,7 @@ export default function FacultyStudentsPage() {
                     Main Dragging Skill: {draggingSkill?.skill} <span className="bg-[#FF4D6D] text-white px-1.5 py-0.5 rounded border-2 border-[#1A1035] text-xs shadow-[2px_2px_0px_#1A1035]">{draggingSkill?.value}</span>
                   </p>
                   <p className="text-sm font-bold text-[#1A1035]/70 mt-2">
-                    {analyzeStudent(selectedScores).weakAreas[0]?.recommendation || 'Focus practice on weakest area to lift PRS quickly.'}
+                    Focus practice on weakest area to lift PRS quickly.
                   </p>
                 </div>
               </div>

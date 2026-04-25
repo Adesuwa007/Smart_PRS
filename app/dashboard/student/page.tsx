@@ -9,7 +9,8 @@ import SkillRadarChart from '@/components/charts/SkillRadarChart';
 import ProgressLineChart from '@/components/charts/ProgressLineChart';
 import ShareCardModal from '@/components/modals/ShareCardModal';
 import UpgradeModal from '@/components/modals/UpgradeModal';
-import { STUDENT_SCORES, PRS_HISTORY, getBatchAverageScores, getAllStudentsWithScores } from '@/lib/mock-data';
+import { STUDENT_SCORES, PRS_HISTORY, getBatchAverageScores } from '@/lib/mock-data';
+import { getAllStudents, type UnifiedStudent } from '@/lib/students-service';
 import { analyzeStudent } from '@/lib/ai-engine';
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/lib/supabase';
@@ -24,7 +25,12 @@ export default function StudentDashboard() {
     setMounted(true);
   }, []);
 
-  const allStudents = getAllStudentsWithScores();
+  const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
+  
+  useEffect(() => {
+    getAllStudents().then(setAllStudents);
+  }, []);
+
   const batchAvg = getBatchAverageScores();
 
   const [scores, setScores] = useState(STUDENT_SCORES[0]);
@@ -125,7 +131,7 @@ export default function StudentDashboard() {
   }, [profile]);
 
   const prs = analyzeStudent(scores);
-  const allPRS = allStudents.map(s => s.prs?.score || 0).sort((a, b) => b - a);
+  const allPRS = allStudents.map(s => s.prs || 0).sort((a, b) => b - a);
   const rank = allPRS.indexOf(prs.score) + 1 || 1;
 
   const displayName = user?.name || 'Student';

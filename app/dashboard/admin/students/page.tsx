@@ -2,10 +2,10 @@
 import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import UpgradeModal from '@/components/modals/UpgradeModal';
-import { getAllStudentsWithScores } from '@/lib/mock-data';
-import { analyzeStudent } from '@/lib/ai-engine';
+import { getAllStudents, subscribeToStudentUpdates, type UnifiedStudent } from '@/lib/students-service';
 import { supabase } from '@/lib/supabase';
 import toast, { Toaster } from 'react-hot-toast';
+import { useEffect } from 'react';
 
 type NewStudent = {
   name: string;
@@ -20,9 +20,14 @@ type NewStudent = {
 const BLANK: NewStudent = { name: '', department: 'CS', aptitude: 75, coding: 75, core_subjects: 75, soft_skills: 75, attendance: 85 };
 
 export default function AdminStudentsPage() {
-  const mockStudents = getAllStudentsWithScores();
-  const [extraStudents, setExtraStudents] = useState<ReturnType<typeof getAllStudentsWithScores>>([]);
-  const allStudents = [...mockStudents, ...extraStudents];
+  const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllStudents().then(data => { setAllStudents(data); setLoading(false); });
+    const sub = subscribeToStudentUpdates(() => getAllStudents().then(setAllStudents));
+    return () => { sub.unsubscribe(); };
+  }, []);
 
   const [search, setSearch] = useState('');
   const [dept, setDept] = useState('all');
@@ -37,7 +42,7 @@ export default function AdminStudentsPage() {
   const filtered = allStudents.filter(s =>
     (dept === 'all' || s.department === dept) &&
     (!search || s.name.toLowerCase().includes(search.toLowerCase())) &&
-    (prsMin === 0 || (s.prs?.score || 0) >= prsMin)
+    (prsMin === 0 || s.prs >= prsMin)
   );
 
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
@@ -107,33 +112,8 @@ export default function AdminStudentsPage() {
       }]);
     } else {
       // Fallback: add to local state only
-      toast('Saved locally — connect Supabase to persist', { icon: '⚠️' });
-      const localId = crypto.randomUUID();
-      const scoreRow = {
-        id: crypto.randomUUID(),
-        student_id: localId,
-        aptitude: form.aptitude,
-        coding: form.coding,
-        core_subjects: form.core_subjects,
-        soft_skills: form.soft_skills,
-        attendance: form.attendance,
-        backlogs: 0,
-        mock_tests_completed: 0,
-        updated_at: new Date().toISOString(),
-      };
-      const prs = analyzeStudent(scoreRow);
-      setExtraStudents(prev => [...prev, {
-        id: localId,
-        name: form.name,
-        email: `${form.name.toLowerCase().replace(/\s+/g, '')}@vvce.ac.in`,
-        role: 'student' as const,
-        college_id: '',
-        plan: 'free' as const,
-        department: form.department as 'CS' | 'IS' | 'ECE',
-        created_at: new Date().toISOString(),
-        scores: scoreRow,
-        prs,
-      }]);
+      // Re-fetch since we added a local extra
+      getAllStudents().then(setAllStudents);
     }
 
     setForm(BLANK);
@@ -267,8 +247,8 @@ export default function AdminStudentsPage() {
               </thead>
               <tbody className="divide-y-2 divide-[#1A1035]/10">
                 {paginated.map((s, idx) => {
-                  const prsScore = s.prs?.score || 0;
-                  const tier = s.prs?.companyTiers[0] || '';
+                  const prsScore = s.prs || 0;
+                  const tier = s.status || '';
                   return (
                     <tr key={s.id} className="hover:bg-[#F8F7FF] transition-colors">
                       <td className="py-4 px-4 text-[#1A1035]/60 font-black border-r-4 border-[#1A1035]">{(page - 1) * PER_PAGE + idx + 1}</td>
@@ -276,7 +256,7 @@ export default function AdminStudentsPage() {
                         <div className="flex flex-col">
                           <span className="text-[#1A1035] font-black">{s.name}</span>
                           <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5">
-                            {`4VV24${s.department === 'ECE' ? 'EC' : (s.department || 'CS')}${String(idx + 1).padStart(3, '0')}`}
+                            {s.usn || `4VV24${s.department === 'ECE' ? 'EC' : (s.department || 'CS')}${String(idx + 1).padStart(3, '0')}`}
                           </span>
                         </div>
                       </td>
@@ -287,12 +267,12 @@ export default function AdminStudentsPage() {
                           {prsScore.toFixed(1)}
                         </span>
                       </td>
-                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.aptitude}</td>
-                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.coding}</td>
-                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.core_subjects}</td>
-                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.soft_skills}</td>
-                      <td className={`py-4 px-4 font-black ${(s.scores?.attendance || 0) >= 75 ? 'text-[#00C9A7]' : 'text-[#FF4D6D]'}`}>{s.scores?.attendance}%</td>
-                      <td className="py-4 px-4">{(s.scores?.backlogs || 0) > 0 ? <span className="bg-[#FF4D6D] text-white border-2 border-[#1A1035] px-2 py-0.5 rounded text-xs font-black shadow-[2px_2px_0px_#1A1035]">{s.scores?.backlogs}</span> : <span className="text-[#1A1035]/50 font-bold">0</span>}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.aptitude}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.coding}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.core_subjects}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.soft_skills}</td>
+                      <td className={`py-4 px-4 font-black ${(s.attendance || 0) >= 75 ? 'text-[#00C9A7]' : 'text-[#FF4D6D]'}`}>{s.attendance}%</td>
+                      <td className="py-4 px-4">{(s.backlogs || 0) > 0 ? <span className="bg-[#FF4D6D] text-white border-2 border-[#1A1035] px-2 py-0.5 rounded text-xs font-black shadow-[2px_2px_0px_#1A1035]">{s.backlogs}</span> : <span className="text-[#1A1035]/50 font-bold">0</span>}</td>
                       <td className="py-4 px-4"><span className="text-xs font-bold text-[#1A1035] bg-[#F8F7FF] border-2 border-[#1A1035] px-2 py-1 rounded whitespace-nowrap">{tier.length > 14 ? tier.slice(0, 14) + '…' : tier}</span></td>
                     </tr>
                   );

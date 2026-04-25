@@ -1,40 +1,69 @@
 'use client';
 import { useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { getAllStudentsWithScores } from '@/lib/mock-data';
+import { getAllStudents, type UnifiedStudent } from '@/lib/students-service';
 import { analyzeStudent } from '@/lib/ai-engine';
 import { StudentScores } from '@/types';
+import { useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function AddScorePage() {
-  const allStudents = getAllStudentsWithScores();
-  const [selectedId, setSelectedId] = useState(allStudents[0]?.id || '');
+  const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
+  const [selectedId, setSelectedId] = useState('');
   const [scores, setScores] = useState<Partial<StudentScores>>({
     aptitude: 0, coding: 0, core_subjects: 0, soft_skills: 0, attendance: 0, backlogs: 0,
   });
+
+  useEffect(() => {
+    getAllStudents().then(data => {
+      setAllStudents(data);
+      if (data.length > 0) setSelectedId(data[0].id);
+    });
+  }, []);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const selectedStudent = allStudents.find(s => s.id === selectedId);
 
   const handlePreFill = () => {
-    if (selectedStudent?.scores) {
+    if (selectedStudent) {
       setScores({
-        aptitude: selectedStudent.scores.aptitude,
-        coding: selectedStudent.scores.coding,
-        core_subjects: selectedStudent.scores.core_subjects,
-        soft_skills: selectedStudent.scores.soft_skills,
-        attendance: selectedStudent.scores.attendance,
-        backlogs: selectedStudent.scores.backlogs,
+        aptitude: selectedStudent.aptitude,
+        coding: selectedStudent.coding,
+        core_subjects: selectedStudent.core_subjects,
+        soft_skills: selectedStudent.soft_skills,
+        attendance: selectedStudent.attendance,
+        backlogs: selectedStudent.backlogs,
       });
     }
   };
 
   const handleSave = async () => {
+    if (!selectedId) return;
     setSaving(true);
-    await new Promise(r => setTimeout(r, 1000));
+    
+    const { error } = await supabase
+      .from('student_scores')
+      .upsert({
+        student_id: selectedId,
+        aptitude: scores.aptitude || 0,
+        coding: scores.coding || 0,
+        core_subjects: scores.core_subjects || 0,
+        soft_skills: scores.soft_skills || 0,
+        attendance: scores.attendance || 0,
+        backlogs: scores.backlogs || 0,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'student_id' });
+
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    if (error) {
+      toast.error('Failed to save scores: ' + error.message);
+    } else {
+      setSaved(true);
+      toast.success('Scores updated!');
+      setTimeout(() => setSaved(false), 3000);
+    }
   };
 
   const previewPRS = scores.coding && scores.aptitude
@@ -62,6 +91,7 @@ export default function AddScorePage() {
 
   return (
     <DashboardLayout role="faculty" userName="Faculty">
+      <Toaster position="top-center" />
       <div className="space-y-6 animate-fade-in max-w-3xl">
         <div>
           <h1 className="text-3xl font-black text-[#1A1035] uppercase tracking-tight">Log Assessment Score ➕</h1>
