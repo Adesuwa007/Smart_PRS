@@ -61,6 +61,32 @@ PRS = (Aptitude × 0.25) + (Coding × 0.35) + (Core Subjects × 0.20) + (Soft Sk
 
 ---
 
+## 🌍 Real World Impact & Scalability
+
+**Impact:** SmartPRS democratizes placement preparation. By providing objective, data-driven readiness scores, it eliminates bias and helps students focus exactly where they need improvement. Colleges can proactively identify struggling students before placement season begins, drastically improving overall hiring rates.
+
+**Scalability:** Built on Next.js and Supabase, the architecture is inherently serverless and scales horizontally. It can effortlessly support a single college with 500 students or scale up to support state-wide university networks with hundreds of thousands of users.
+
+---
+
+## 💰 Monetization Strategy
+
+SmartPRS utilizes a **B2B SaaS (Software as a Service) model** targeting educational institutions:
+
+*   **Free Tier:** Basic PRS calculation and limited mock assessments (Perfect for individuals).
+*   **Pro Tier (₹18,499/month per college):** Unlimited students, advanced AI Resume Analyzer, Company Targeting, and comprehensive CSV exports for TPOs.
+*   **Enterprise Tier:** Custom integrations with university ERP systems, dedicated support, and white-labeling options.
+
+---
+
+## 🔮 Future Scope
+
+*   **Mock Interview Deep-Fakes:** Using generative AI to simulate real recruiters from specific companies (e.g., an "Amazon Hiring Manager" persona).
+*   **Alumni Network Integration:** Connecting "At-Risk" students with alumni mentors who successfully placed in their target companies.
+*   **Real-time Job Board:** Auto-matching students to live job postings based on their PRS and specific skill breakdown.
+
+---
+
 ## 💻 Local Setup & Development
 
 Want to run SmartPRS locally? It takes less than 2 minutes.
