@@ -114,7 +114,14 @@ export default function FacultyStudentsPage() {
               {filtered.map(s => {
                 const prsScore = s.prs?.score || 0;
                 return (
-                  <tr key={s.id} className="hover:bg-[#F8F7FF] transition-colors">
+                  <tr 
+                    key={s.id} 
+                    className="transition-colors"
+                    onClick={() => setSelectedStudentId(s.id)}
+                    style={{ cursor: 'pointer', transition: 'background 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(108,71,255,0.08)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
                     <td className="py-4 px-4 text-[#1A1035] font-black border-r-4 border-[#1A1035]">{s.name}</td>
                     <td className="py-4 px-4"><span className="bg-white text-[#1A1035] border-2 border-[#1A1035] shadow-[2px_2px_0px_#6C47FF] px-2 py-1 text-xs font-black uppercase tracking-wider rounded">{s.department}</span></td>
                     <td className="py-4 px-4">

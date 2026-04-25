@@ -29,10 +29,18 @@ export default function StudentDashboard() {
 
   const [scores, setScores] = useState(STUDENT_SCORES[0]);
   const [profile, setProfile] = useState({
-    linkedin: typeof window !== 'undefined' ? localStorage.getItem('linkedin') || '' : '',
-    github: typeof window !== 'undefined' ? localStorage.getItem('github') || '' : '',
-    projects: typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('projects') || '["", "", ""]') : ['', '', '']
+    linkedin: '',
+    github: '',
+    projects: ['', '', '']
   });
+
+  useEffect(() => {
+    setProfile({
+      linkedin: localStorage.getItem('linkedin') || '',
+      github: localStorage.getItem('github') || '',
+      projects: JSON.parse(localStorage.getItem('projects') || '["", "", ""]')
+    });
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -58,11 +66,56 @@ export default function StudentDashboard() {
 
   useEffect(() => {
     if (!user) return;
-    const allSessions = getImprovementSessions();
-    // Match by id 'demo-student' for demo users, or by actual user.id
-    const studentId = user.isDemo ? 'demo-student' : user.id;
-    setImpSessions(allSessions.filter(s => s.student_id === studentId));
-    setNotifications(getNotifications().filter(n => n.user_id === studentId));
+    
+    const demoStudentIds = [
+      'demo-student',
+      'student@demo.com', 
+      'arjun-sharma',
+      '1'
+    ];
+    
+    const currentUserId = localStorage.getItem('userId') || 'demo-student';
+    const currentUserName = localStorage.getItem('userName') || 'Student';
+    
+    const all = getImprovementSessions();
+    
+    const mine = all.filter(s => 
+      s.student_id === currentUserId ||
+      s.student_id === currentUserName ||
+      demoStudentIds.includes(s.student_id) ||
+      s.student_name?.toLowerCase() === currentUserName.toLowerCase() ||
+      s.student_name?.toLowerCase() === user.name.toLowerCase()
+    );
+
+    if (mine.length === 0 && user.isDemo) {
+      const demoSession = {
+        id: 'demo-session-1',
+        faculty_id: 'fac-1',
+        faculty_name: 'Prof. Ramesh Kumar',
+        student_id: 'demo-student',
+        student_name: user.name || 'Student',
+        weak_area: 'Soft Skills',
+        current_score: 71,
+        target_score: 85,
+        session_date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+        meet_link: 'https://meet.google.com/abc-defg-hij',
+        agenda: 'HR round prep, communication techniques, mock behavioral questions',
+        status: 'scheduled' as const,
+        created_at: new Date().toISOString()
+      };
+      const existing = getImprovementSessions();
+      existing.push(demoSession);
+      localStorage.setItem('improvement_sessions', JSON.stringify(existing));
+      mine.push(demoSession);
+    }
+    
+    setImpSessions(mine);
+    
+    const notifs = getNotifications();
+    setNotifications(notifs.filter(n => 
+      n.user_id === currentUserId || 
+      demoStudentIds.includes(n.user_id)
+    ));
   }, [user]);
 
   useEffect(() => {

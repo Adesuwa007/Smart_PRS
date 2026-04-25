@@ -112,12 +112,45 @@ export default function SoftSkillsReportView({ report, studentName }: { report: 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="p-5 rounded-xl bg-white border-2 border-[#1A1035] shadow-[4px_4px_0px_#1A1035]">
           <h4 className="text-[10px] font-black text-[#1A1035] uppercase tracking-widest mb-3 border-b-2 border-[#1A1035]/10 pb-2">🗣️ Filler Words</h4>
-          {report.totalFillers === 0 ? (
-            <p className="text-sm font-bold text-[#00C9A7]">✅ None detected — excellent!</p>
-          ) : (
+          {report.totalFillers > 0 ? (
             <div>
-              <p className="text-sm font-bold text-[#FFB347] mb-3">{report.totalFillers} filler{report.totalFillers > 1 ? 's' : ''} found</p>
-              <div className="flex flex-wrap gap-2">{report.allFillers.map(f => <span key={f} className="px-2 py-1 text-[10px] font-black bg-[#FFB347] border-2 border-[#1A1035] text-[#1A1035] rounded shadow-[2px_2px_0px_#1A1035] uppercase tracking-widest">{f}</span>)}</div>
+              <p style={{color: '#f59e0b'}}>
+                ⚠️ {report.totalFillers} filler word types detected:
+              </p>
+              <div style={{
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                gap: '8px',
+                marginTop: '8px'
+              }}>
+                {report.allFillers.map((f, i) => (
+                  <span key={i} style={{
+                    background: 'rgba(245,158,11,0.15)',
+                    border: '1px solid rgba(245,158,11,0.4)',
+                    color: '#f59e0b',
+                    padding: '4px 12px',
+                    borderRadius: '20px',
+                    fontSize: '13px',
+                    fontWeight: 600
+                  }}>
+                    {f}
+                  </span>
+                ))}
+              </div>
+              <p style={{
+                color: '#94a3b8', 
+                fontSize: '12px',
+                marginTop: '8px'
+              }}>
+                Tip: Replace fillers with a brief pause instead.
+              </p>
+            </div>
+          ) : (
+            <div style={{
+              color: '#22c55e',
+              fontWeight: 600
+            }}>
+              ✅ No filler words detected — excellent speech control!
             </div>
           )}
         </div>

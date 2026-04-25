@@ -7,11 +7,13 @@ import BatchBarChart from '@/components/charts/BatchBarChart';
 import { getAllStudents, subscribeToStudentUpdates, type UnifiedStudent } from '@/lib/students-service';
 import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { getImprovementSessions, createImprovementSession, updateImprovementSession, createNotification } from '@/lib/client-data';
 import type { MeetingRecord, ImprovementSession } from '@/types';
 
 export default function FacultyDashboard() {
   const { user } = useAuth();
+  const router = useRouter();
   const statsInput = STUDENT_SCORES.map((s, i) => ({ scores: s, department: STUDENT_PROFILES[i]?.department }));
   const stats = calculateBatchStats(statsInput);
 
@@ -201,7 +203,21 @@ export default function FacultyDashboard() {
               <tbody className="divide-y-2 divide-[#1A1035]/5">
                 {filteredStudents.map(student => (
                   <tr key={student.id} className="hover:bg-[#F8F7FF] transition-colors group">
-                    <td className="px-4 py-3 font-black text-[#1A1035] group-hover:text-[#6C47FF] transition-colors">{student.name}</td>
+                    <td className="px-4 py-3 font-black text-[#1A1035] group-hover:text-[#6C47FF] transition-colors">
+                      <span
+                        onClick={() => router.push(`/dashboard/faculty/students?highlight=${student.id}`)}
+                        style={{
+                          cursor: 'pointer',
+                          color: '#06b6d4',
+                          fontWeight: 600,
+                          textDecoration: 'underline',
+                          textUnderlineOffset: '3px'
+                        }}
+                        title="Click to view student details"
+                      >
+                        {student.name}
+                      </span>
+                    </td>
                     <td className="px-4 py-3 font-bold text-[#1A1035]/60">{student.department}</td>
                     <td className="px-4 py-3">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border-2 shadow-[1px_1px_0px_currentColor]

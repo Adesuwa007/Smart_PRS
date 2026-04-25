@@ -2,6 +2,31 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import SoftSkillsReportView from '@/components/dashboard/SoftSkillsReportView';
+
+const detectFillerWords = (text: string) => {
+  if (!text || text.trim() === '') return [];
+  const lower = text.toLowerCase();
+  const fillerList = [
+    'um', 'uh', 'umm', 'uhh',
+    'like', 'basically', 'literally',
+    'actually', 'honestly', 'clearly',
+    'right', 'okay', 'so',
+    'you know', 'i mean', 'kind of',
+    'sort of', 'you see', 'well',
+    'hmm', 'err', 'ah', 'oh'
+  ];
+  const found: string[] = [];
+  fillerList.forEach(filler => {
+    if (lower.includes(filler)) {
+      const regex = new RegExp(`\\b${filler}\\b`, 'gi');
+      const matches = lower.match(regex);
+      if (matches && matches.length > 0) {
+        found.push(`${filler} (×${matches.length})`);
+      }
+    }
+  });
+  return found;
+};
 import { useAuth } from '@/lib/auth-context';
 import { supabase } from '@/lib/supabase';
 import { analyzeSoftSkillResponses, type SoftSkillsReport } from '@/lib/soft-skills-engine';
@@ -82,11 +107,13 @@ export default function SoftSkillsAnalyzerPage() {
     }
 
     setPhase('analyzing');
-    // Snapshot fillers accumulated from interim results
-    const preFillers = Array.from(fillerSetRef.current);
     setTimeout(() => {
       const responses = [{ question: QUESTION, answer: transcript }];
-      const report = analyzeSoftSkillResponses(responses, preFillers);
+      const fillers = detectFillerWords(transcript);
+      const report = analyzeSoftSkillResponses(responses, []); // Not using preFillers anymore
+      report.allFillers = fillers;
+      report.totalFillers = fillers.length;
+      
       setResults(report);
       localStorage.setItem('latestMockInterviewScore', String(report.overallScore));
       toast.success(`✅ PRS Updated — Score: ${report.overallScore}`);
