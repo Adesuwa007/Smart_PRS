@@ -204,19 +204,22 @@ export default function FacultyDashboard() {
                 {filteredStudents.map(student => (
                   <tr key={student.id} className="hover:bg-[#F8F7FF] transition-colors group">
                     <td className="px-4 py-3 font-black text-[#1A1035] group-hover:text-[#6C47FF] transition-colors">
-                      <span
-                        onClick={() => router.push(`/dashboard/faculty/students?highlight=${student.id}`)}
-                        style={{
-                          cursor: 'pointer',
-                          color: '#06b6d4',
-                          fontWeight: 600,
-                          textDecoration: 'underline',
-                          textUnderlineOffset: '3px'
-                        }}
-                        title="Click to view student details"
-                      >
-                        {student.name}
-                      </span>
+                      <div className="flex flex-col">
+                        <span
+                          onClick={() => router.push(`/dashboard/faculty/students?highlight=${student.id}`)}
+                          style={{
+                            cursor: 'pointer',
+                            color: '#06b6d4',
+                            fontWeight: 600,
+                            textDecoration: 'underline',
+                            textUnderlineOffset: '3px'
+                          }}
+                          title="Click to view student details"
+                        >
+                          {student.name}
+                        </span>
+                        <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5">{student.usn}</span>
+                      </div>
                     </td>
                     <td className="px-4 py-3 font-bold text-[#1A1035]/60">{student.department}</td>
                     <td className="px-4 py-3">

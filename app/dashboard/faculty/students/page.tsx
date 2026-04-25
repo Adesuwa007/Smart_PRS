@@ -122,7 +122,12 @@ export default function FacultyStudentsPage() {
                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(108,71,255,0.08)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    <td className="py-4 px-4 text-[#1A1035] font-black border-r-4 border-[#1A1035]">{s.name}</td>
+                    <td className="py-4 px-4 border-r-4 border-[#1A1035]">
+                      <div className="flex flex-col">
+                        <span className="text-[#1A1035] font-black">{s.name}</span>
+                        <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5">{s.usn}</span>
+                      </div>
+                    </td>
                     <td className="py-4 px-4"><span className="bg-white text-[#1A1035] border-2 border-[#1A1035] shadow-[2px_2px_0px_#6C47FF] px-2 py-1 text-xs font-black uppercase tracking-wider rounded">{s.department}</span></td>
                     <td className="py-4 px-4">
                       <button

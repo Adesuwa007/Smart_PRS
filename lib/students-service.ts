@@ -16,6 +16,7 @@ export interface UnifiedStudent {
   backlogs: number;
   prs: number;
   status: string;
+  usn: string;
   plan: string;
   isDemo: boolean;
   joinedAt: string;
@@ -40,6 +41,7 @@ export async function getAllStudents(): Promise<UnifiedStudent[]> {
       backlogs: scores.backlogs || 0,
       prs: prsScore,
       status: analysis.probability,
+      usn: `4VV24${p.department === 'ECE' ? 'EC' : (p.department || 'CS')}${String(i + 1).padStart(3, '0')}`,
       plan: 'pro',
       isDemo: true,
       joinedAt: '2025-01-15',
@@ -63,16 +65,18 @@ export async function getAllStudents(): Promise<UnifiedStudent[]> {
 
     const today = new Date().toISOString().split('T')[0];
 
-    const realStudents: UnifiedStudent[] = profiles.map(profile => {
+    const realStudents: UnifiedStudent[] = profiles.map((profile, i) => {
       const studentScore = scores?.find(s => s.student_id === profile.id);
       const sc = studentScore || { aptitude: 0, coding: 0, core_subjects: 0, soft_skills: 0, attendance: 75, backlogs: 0 };
       const prsScore = calculatePRS(sc);
       const analysis = analyzeStudent(sc);
+      const dept = studentScore?.department || 'CS';
+      
       return {
         id: profile.id,
         name: profile.name,
         email: profile.email,
-        department: studentScore?.department || 'CSE',
+        department: dept,
         aptitude: sc.aptitude || 0,
         coding: sc.coding || 0,
         core_subjects: sc.core_subjects || 0,
@@ -81,15 +85,15 @@ export async function getAllStudents(): Promise<UnifiedStudent[]> {
         backlogs: sc.backlogs || 0,
         prs: prsScore,
         status: analysis.probability,
+        usn: `4VV24${dept === 'ECE' ? 'EC' : dept}${String(i + 1).padStart(3, '0')}`,
         plan: profile.plan || 'free',
         isDemo: false,
         joinedAt: profile.created_at?.split('T')[0] || today,
       };
     });
 
-    // Real students first, then demo
-    const merged = [...realStudents, ...demoStudents];
-    return ensureLoggedInStudent(merged);
+    // Only return real students. The old mock students won't show up anymore.
+    return ensureLoggedInStudent(realStudents);
   } catch {
     return ensureLoggedInStudent(demoStudents);
   }

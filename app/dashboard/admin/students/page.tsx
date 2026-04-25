@@ -272,7 +272,14 @@ export default function AdminStudentsPage() {
                   return (
                     <tr key={s.id} className="hover:bg-[#F8F7FF] transition-colors">
                       <td className="py-4 px-4 text-[#1A1035]/60 font-black border-r-4 border-[#1A1035]">{(page - 1) * PER_PAGE + idx + 1}</td>
-                      <td className="py-4 px-4 text-[#1A1035] font-black">{s.name}</td>
+                      <td className="py-4 px-4">
+                        <div className="flex flex-col">
+                          <span className="text-[#1A1035] font-black">{s.name}</span>
+                          <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5">
+                            {`4VV24${s.department === 'ECE' ? 'EC' : (s.department || 'CS')}${String(idx + 1).padStart(3, '0')}`}
+                          </span>
+                        </div>
+                      </td>
                       <td className="py-4 px-4"><span className="bg-white text-[#1A1035] border-2 border-[#1A1035] shadow-[2px_2px_0px_#6C47FF] px-2 py-1 text-xs font-black uppercase tracking-wider rounded">{s.department}</span></td>
                       <td className="py-4 px-4">
                         <span className={`inline-flex items-center gap-1 px-3 py-1 rounded border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] text-sm font-black
