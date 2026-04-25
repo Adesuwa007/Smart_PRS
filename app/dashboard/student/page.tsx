@@ -176,7 +176,10 @@ export default function StudentDashboard() {
         {/* Welcome + Psychology Microcopy */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-[#1A1035]">Welcome back, {firstName} 👋</h1>
+            <h1 className="text-3xl font-black tracking-tight text-[#1A1035] flex items-center gap-3">
+              Welcome back, {firstName} 👋
+              <span className="text-sm font-bold text-[#1A1035]/40 tracking-widest mt-2 uppercase bg-[#F8F7FF] border-2 border-[#1A1035]/10 px-2 py-0.5 rounded-lg">{allStudents.find(s => s.id === user?.id || s.email === user?.email)?.usn || '4VV24CS001'}</span>
+            </h1>
             <p className="text-[#1A1035]/60 font-bold text-sm mt-1">
               {prs.score >= 80
                 ? `You're in the top ${Math.round((rank / allStudents.length) * 100)}% of your batch! 🏆`

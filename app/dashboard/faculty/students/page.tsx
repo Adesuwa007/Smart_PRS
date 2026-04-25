@@ -160,7 +160,10 @@ export default function FacultyStudentsPage() {
           <div className="fixed inset-0 z-50 bg-[#1A1035]/80 backdrop-blur-sm flex items-center justify-center p-4">
             <div className="bg-white w-full max-w-2xl p-6 sm:p-8 space-y-6 border-4 border-[#1A1035] shadow-[12px_12px_0px_#00C9A7] rounded-2xl relative">
               <div className="flex items-center justify-between border-b-4 border-[#1A1035]/10 pb-4">
-                <h3 className="text-xl font-black text-[#1A1035] uppercase tracking-tight">{selectedStudent.name} — PRS Breakdown</h3>
+                <h3 className="text-xl font-black text-[#1A1035] uppercase tracking-tight flex items-center gap-3">
+                  {selectedStudent.name} — PRS Breakdown
+                  <span className="text-xs font-bold text-[#1A1035]/40 tracking-widest mt-1">{(selectedStudent as any).usn || `4VV24${selectedStudent.department === 'ECE' ? 'EC' : (selectedStudent.department || 'CS')}001`}</span>
+                </h3>
                 <button onClick={() => setSelectedStudentId(null)} className="text-[#1A1035] hover:text-[#FF4D6D] transition-colors">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>

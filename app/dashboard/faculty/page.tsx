@@ -352,7 +352,10 @@ export default function FacultyDashboard() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1A1035]/40 backdrop-blur-sm p-4">
           <div className="bg-white border-4 border-[#1A1035] rounded-2xl w-full max-w-md p-6 relative max-h-[90vh] overflow-y-auto shadow-[8px_8px_0px_#1A1035]">
             <button onClick={() => setSelectedStudent(null)} className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-[#F8F7FF] border-2 border-[#1A1035] rounded-full text-[#1A1035] font-black hover:bg-[#1A1035] hover:text-white transition-colors">✕</button>
-            <h2 className="text-2xl font-black text-[#1A1035] mb-1 tracking-tight">{selectedStudent.name}</h2>
+            <h2 className="text-xl font-black text-[#1A1035] flex items-center gap-2">
+              {selectedStudent.name}
+              <span className="text-xs font-bold text-[#1A1035]/40 uppercase tracking-widest mt-1">{selectedStudent.usn}</span>
+            </h2>
             <p className="text-sm font-bold text-[#1A1035]/60 mb-6">{selectedStudent.department} • PRS: <span className="text-[#6C47FF]">{selectedStudent.prs.toFixed(1)}</span></p>
             
             <h3 className="text-xs font-black text-[#1A1035]/40 mb-3 uppercase tracking-wider">Skill Breakdown</h3>
