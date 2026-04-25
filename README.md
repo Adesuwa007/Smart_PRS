@@ -73,12 +73,9 @@ npm install
 ```
 
 ### 2. Environment Variables
-Create a `.env.local` file in the root directory:
-```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
-```
+Create a `.env.local` file in the root directory. 
+
+*Note: The environment variables (like Supabase URLs and Keys) are kept secret for security. To run this project locally with real data, please contact the repository owner for the required `.env.local` values.*
 
 ### 3. Run the App
 ```bash
