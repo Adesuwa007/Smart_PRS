@@ -111,54 +111,58 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-brand-dark text-gray-200">
+    <div className="min-h-screen bg-[#F8F7FF] text-[#1A1035] font-sans selection:bg-[#00C9A7] selection:text-[#1A1035]">
       {/* Nav */}
-      <nav className="border-b border-brand-border px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-cyan to-brand-purple flex items-center justify-center text-white font-bold text-sm">S</div>
-          <span className="text-xl font-bold text-white">Smart<span className="text-brand-cyan">PRS</span></span>
+      <nav className="border-b-4 border-[#1A1035] bg-white px-6 py-4 flex items-center justify-between shadow-[0px_4px_0px_#1A1035] relative z-10">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl bg-white border-4 border-[#1A1035] flex items-center justify-center text-[#1A1035] font-black text-lg shadow-[2px_2px_0px_#6C47FF] group-hover:shadow-[4px_4px_0px_#6C47FF] group-hover:-translate-y-0.5 transition-all">S</div>
+          <span className="text-2xl font-black text-[#1A1035] uppercase tracking-tighter">Smart<span className="text-[#6C47FF]">PRS</span></span>
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm text-gray-400 hover:text-white transition">Login</Link>
-          <Link href="/signup" className="btn-primary text-sm py-2 px-5">Get Started</Link>
+          <Link href="/login" className="text-sm font-black uppercase tracking-wider text-[#1A1035]/60 hover:text-[#6C47FF] transition-colors">Login</Link>
+          <Link href="/signup" className="bg-[#00C9A7] text-[#1A1035] text-sm font-black uppercase tracking-wider px-6 py-2.5 rounded-xl border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] hover:shadow-[4px_4px_0px_#1A1035] hover:-translate-y-0.5 transition-all">Get Started</Link>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="py-20 px-6 text-center gradient-mesh">
-        <div className="badge badge-purple mb-4 text-xs mx-auto">💰 Transparent Pricing</div>
-        <h1 className="text-4xl font-extrabold text-white mb-4">Simple, Transparent Pricing</h1>
-        <p className="text-gray-400 max-w-lg mx-auto">Start free. Upgrade when you need AI superpowers. No hidden fees.</p>
-        <div className="mt-6 inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full px-4 py-2 text-sm text-emerald-400">
-          ✓ 14-day Pro trial available · No credit card required to start
+      <section className="py-20 px-6 text-center relative overflow-hidden bg-white border-b-4 border-[#1A1035]">
+        {/* Pattern */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#1A1035 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+        <div className="relative z-10">
+          <div className="bg-[#6C47FF] text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest inline-block mb-6 border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035]">💰 Transparent Pricing</div>
+          <h1 className="text-4xl md:text-5xl font-black text-[#1A1035] mb-4 uppercase tracking-tight">Simple, <span className="text-[#FF4D6D]">Transparent</span> Pricing</h1>
+          <p className="text-lg font-bold text-[#1A1035]/60 max-w-lg mx-auto">Start free. Upgrade when you need AI superpowers. No hidden fees.</p>
+          <div className="mt-8 inline-flex items-center gap-2 bg-[#F8F7FF] border-2 border-[#1A1035] rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] shadow-[4px_4px_0px_#00C9A7]">
+            <span className="text-[#00C9A7] font-black text-lg leading-none">✓</span> 14-day Pro trial available · No credit card required to start
+          </div>
         </div>
       </section>
 
       {/* Plans */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-6">
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
           {plans.map((plan) => (
-            <div key={plan.name} className={`glass-card p-8 relative flex flex-col ${plan.popular ? 'border-brand-purple/50 ring-1 ring-brand-purple/20' : ''}`}>
+            <div key={plan.name} className={`bg-white border-4 border-[#1A1035] p-8 rounded-2xl relative flex flex-col transition-transform ${plan.popular ? 'shadow-[12px_12px_0px_#6C47FF] md:-translate-y-4' : 'shadow-[8px_8px_0px_#1A1035]'}`}>
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 pro-badge px-4 py-1.5">⚡ MOST POPULAR</div>
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FFB347] text-[#1A1035] font-black text-xs px-4 py-1.5 uppercase tracking-widest border-4 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] rounded-full rotate-2">⚡ MOST POPULAR</div>
               )}
-              <div className="text-3xl mb-3">{plan.icon}</div>
-              <h2 className="text-xl font-bold text-white mb-1">{plan.name}</h2>
-              <div className="mb-1">
-                <span className="text-3xl font-extrabold text-white">{plan.price}</span>
-                <span className="text-gray-500 text-sm">{plan.period}</span>
+              <div className="w-16 h-16 bg-[#F8F7FF] border-4 border-[#1A1035] rounded-xl flex items-center justify-center text-3xl shadow-[4px_4px_0px_#1A1035] mb-6">{plan.icon}</div>
+              <h2 className="text-2xl font-black text-[#1A1035] mb-2 uppercase tracking-tight">{plan.name}</h2>
+              <div className="mb-2">
+                <span className="text-4xl font-black text-[#1A1035]">{plan.price}</span>
+                <span className="text-[#1A1035]/50 font-bold ml-1">{plan.period}</span>
               </div>
-              {plan.usd && <p className="text-xs text-gray-600 mb-6">{plan.usd} USD</p>}
+              {plan.usd && <p className="text-sm font-bold text-[#1A1035]/40 mb-8">{plan.usd} USD</p>}
 
-              <ul className="space-y-2.5 mb-8 flex-1">
+              <ul className="space-y-4 mb-10 flex-1">
                 {plan.features.map((f, fi) => (
-                  <li key={fi} className="flex items-start gap-2 text-sm text-gray-300">
-                    <span className="text-emerald-400 mt-0.5 flex-shrink-0">✓</span>{f}
+                  <li key={fi} className="flex items-start gap-3 text-sm font-bold text-[#1A1035]">
+                    <span className="text-[#00C9A7] font-black text-lg leading-none flex-shrink-0">✓</span>{f}
                   </li>
                 ))}
                 {plan.blocked.map((f, fi) => (
-                  <li key={fi} className="flex items-start gap-2 text-sm text-gray-600 line-through">
-                    <span className="mt-0.5 flex-shrink-0">✗</span>{f}
+                  <li key={fi} className="flex items-start gap-3 text-sm font-bold text-[#1A1035]/40 line-through">
+                    <span className="text-[#FF4D6D] font-black text-lg leading-none flex-shrink-0">✗</span>{f}
                   </li>
                 ))}
               </ul>
@@ -167,15 +171,15 @@ export default function PricingPage() {
                 <button
                   onClick={() => handleCheckout(plan)}
                   disabled={loading === plan.name}
-                  className={`w-full justify-center block ${plan.popular ? 'btn-purple' : 'btn-secondary'} py-3 text-center disabled:opacity-50`}>
-                  {loading === plan.name ? '⏳ Opening Checkout...' : plan.cta}
+                  className={`w-full block text-center font-black uppercase tracking-wider py-4 rounded-xl border-4 border-[#1A1035] transition-all disabled:opacity-50 ${plan.popular ? 'bg-[#6C47FF] text-white shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1' : 'bg-[#F8F7FF] text-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1'}`}>
+                  {loading === plan.name ? '⏳ Checkout...' : plan.cta}
                 </button>
               ) : plan.name === 'Enterprise' ? (
-                <a href={plan.ctaLink} className="btn-secondary w-full text-center py-3">
+                <a href={plan.ctaLink} className="block w-full text-center font-black uppercase tracking-wider py-4 rounded-xl border-4 border-[#1A1035] bg-[#F8F7FF] text-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all">
                   {plan.cta}
                 </a>
               ) : (
-                <Link href={plan.ctaLink} className={`w-full text-center block ${plan.popular ? 'btn-purple' : 'btn-secondary'} py-3`}>
+                <Link href={plan.ctaLink} className={`block w-full text-center font-black uppercase tracking-wider py-4 rounded-xl border-4 border-[#1A1035] transition-all ${plan.popular ? 'bg-[#6C47FF] text-white shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1' : 'bg-[#F8F7FF] text-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1'}`}>
                   {plan.cta}
                 </Link>
               )}
@@ -184,25 +188,25 @@ export default function PricingPage() {
         </div>
 
         {/* Feature comparison note */}
-        <div className="max-w-6xl mx-auto mt-10 glass-card p-6 flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
-          <div className="text-3xl">🔒</div>
+        <div className="max-w-6xl mx-auto mt-12 bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl shadow-[8px_8px_0px_#1A1035] flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+          <div className="w-16 h-16 bg-[#F8F7FF] border-4 border-[#1A1035] rounded-xl flex items-center justify-center text-3xl shadow-[4px_4px_0px_#00C9A7] flex-shrink-0">🔒</div>
           <div className="flex-1">
-            <p className="text-white font-semibold text-sm">Try before you commit</p>
-            <p className="text-gray-400 text-sm mt-1">Log in as <code className="bg-brand-surface px-1.5 py-0.5 rounded text-brand-cyan text-xs">admin@demo.com</code> with password <code className="bg-brand-surface px-1.5 py-0.5 rounded text-brand-cyan text-xs">Demo@1234</code> to explore all Pro features on our demo college.</p>
+            <p className="text-[#1A1035] font-black text-lg uppercase tracking-tight mb-2">Try before you commit</p>
+            <p className="text-[#1A1035]/70 font-bold text-sm">Log in as <code className="bg-[#1A1035] px-2 py-1 rounded text-white text-xs border-2 border-[#1A1035]">admin@demo.com</code> with password <code className="bg-[#1A1035] px-2 py-1 rounded text-white text-xs border-2 border-[#1A1035]">Demo@1234</code> to explore all Pro features on our demo college.</p>
           </div>
-          <Link href="/login" className="btn-secondary py-2 px-6 text-sm flex-shrink-0">Try Demo →</Link>
+          <Link href="/login" className="bg-[#1A1035] text-white font-black uppercase tracking-wider py-3 px-8 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#6C47FF] hover:shadow-[6px_6px_0px_#6C47FF] hover:-translate-y-1 transition-all whitespace-nowrap">Try Demo →</Link>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-16 px-6 bg-brand-surface/20">
+      <section className="py-20 px-6 bg-white border-t-4 border-[#1A1035]">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-10">Frequently Asked Questions</h2>
-          <div className="space-y-4">
+          <h2 className="text-3xl md:text-4xl font-black text-[#1A1035] text-center mb-12 uppercase tracking-tight">Frequently Asked Questions</h2>
+          <div className="space-y-6">
             {faqs.map((faq, i) => (
-              <div key={i} className="glass-card p-6">
-                <p className="text-white font-semibold mb-2">{faq.q}</p>
-                <p className="text-sm text-gray-400 leading-relaxed">{faq.a}</p>
+              <div key={i} className="bg-[#F8F7FF] border-4 border-[#1A1035] p-6 rounded-2xl shadow-[6px_6px_0px_#1A1035]">
+                <p className="text-[#1A1035] font-black uppercase tracking-tight mb-3 text-lg">{faq.q}</p>
+                <p className="text-base font-bold text-[#1A1035]/70 leading-relaxed">{faq.a}</p>
               </div>
             ))}
           </div>
@@ -210,8 +214,8 @@ export default function PricingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-brand-border py-8 px-6 text-center">
-        <p className="text-xs text-gray-600">© 2026 SmartPRS · DebugLeaf · SYMBIOT Hackathon · Vidyavardhaka College of Engineering, Mysuru</p>
+      <footer className="bg-[#1A1035] border-t-8 border-[#6C47FF] py-10 px-6 text-center">
+        <p className="text-xs font-bold text-white/50 uppercase tracking-wider">© 2026 SmartPRS · DebugLeaf · SYMBIOT Hackathon · Vidyavardhaka College of Engineering, Mysuru</p>
       </footer>
     </div>
   );

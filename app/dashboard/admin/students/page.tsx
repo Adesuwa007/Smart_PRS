@@ -142,34 +142,35 @@ export default function AdminStudentsPage() {
   };
 
   return (
-    <DashboardLayout role="admin" userName="Admin">
+    <DashboardLayout role="admin" userName="User">
       <Toaster position="top-center" />
       <div className="space-y-6 animate-fade-in">
-        <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-4 border-[#1A1035] pb-6">
           <div>
-            <h1 className="text-2xl font-bold text-white">All Students 👥</h1>
-            <p className="text-sm text-gray-400">Complete student roster with scores</p>
+            <h1 className="text-3xl font-black text-[#1A1035] uppercase tracking-tight">All Students 👥</h1>
+            <p className="text-sm font-bold text-[#1A1035]/60 mt-1">Complete student roster with scores</p>
           </div>
-          <div className="flex gap-3">
-            <button onClick={() => setShowForm(v => !v)} className="btn-secondary py-2 px-5 text-sm">
+          <div className="flex gap-4">
+            <button onClick={() => setShowForm(v => !v)} className="bg-white text-[#1A1035] font-black uppercase tracking-wider py-3 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all text-xs">
               {showForm ? '✕ Cancel' : '➕ Add Student'}
             </button>
-            <button onClick={() => setUpgradeOpen(true)} className="btn-purple py-2 px-5 text-sm">
-              📁 Export CSV <span className="pro-badge ml-1 text-[8px]">PRO</span>
+            <button onClick={() => setUpgradeOpen(true)} className="bg-[#6C47FF] text-white font-black uppercase tracking-wider py-3 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all text-xs flex items-center gap-2">
+              📁 Export CSV <span className="bg-white text-[#1A1035] px-1.5 py-0.5 rounded text-[8px] tracking-widest">PRO</span>
             </button>
           </div>
         </div>
 
         {/* Add Student Form */}
         {showForm && (
-          <div className="glass-card p-6">
-            <h3 className="text-base font-semibold text-white mb-4">Add New Student</h3>
-            <form onSubmit={handleAddStudent} className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl shadow-[6px_6px_0px_#1A1035] relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-2 h-full bg-[#00C9A7] border-r-4 border-[#1A1035]"></div>
+            <h3 className="text-sm font-black text-[#1A1035] uppercase tracking-wider mb-6 pl-4 border-b-4 border-[#1A1035]/10 pb-4">Add New Student</h3>
+            <form onSubmit={handleAddStudent} className="space-y-6 pl-4">
+              <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Full Name *</label>
+                  <label className="block text-xs font-black text-[#1A1035] uppercase tracking-wider mb-2">Full Name *</label>
                   <input
-                    className="input-dark py-2 text-sm w-full"
+                    className="w-full bg-[#F8F7FF] border-2 border-[#1A1035] rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] focus:border-[#6C47FF] focus:shadow-[4px_4px_0px_#6C47FF] focus:-translate-y-1 transition-all outline-none"
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                     placeholder="Riya Patel"
@@ -177,9 +178,9 @@ export default function AdminStudentsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Department</label>
+                  <label className="block text-xs font-black text-[#1A1035] uppercase tracking-wider mb-2">Department</label>
                   <select
-                    className="input-dark py-2 text-sm w-full"
+                    className="w-full bg-[#F8F7FF] border-2 border-[#1A1035] rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] focus:border-[#6C47FF] focus:shadow-[4px_4px_0px_#6C47FF] focus:-translate-y-1 transition-all outline-none appearance-none"
                     value={form.department}
                     onChange={e => setForm(f => ({ ...f, department: e.target.value }))}>
                     <option value="CS">CS</option>
@@ -190,7 +191,7 @@ export default function AdminStudentsPage() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 border-t-4 border-[#1A1035]/10">
                 {([
                   { key: 'aptitude', label: 'Aptitude' },
                   { key: 'coding', label: 'Coding' },
@@ -198,20 +199,23 @@ export default function AdminStudentsPage() {
                   { key: 'soft_skills', label: 'Soft Skills' },
                   { key: 'attendance', label: 'Attendance %' },
                 ] as const).map(f => (
-                  <div key={f.key}>
-                    <label className="block text-xs text-gray-500 mb-1">{f.label}: {form[f.key]}</label>
+                  <div key={f.key} className="bg-[#F8F7FF] border-2 border-[#1A1035] p-4 rounded-xl shadow-[4px_4px_0px_#1A1035]">
+                    <div className="flex justify-between items-center mb-2">
+                      <label className="block text-xs font-black text-[#1A1035]/60 uppercase tracking-wider">{f.label}</label>
+                      <span className="text-sm font-black text-[#1A1035] bg-white border-2 border-[#1A1035] px-2 py-0.5 rounded shadow-[2px_2px_0px_#1A1035]">{form[f.key]}</span>
+                    </div>
                     <input
                       type="range" min="0" max="100"
                       value={form[f.key]}
                       onChange={e => setForm(prev => ({ ...prev, [f.key]: +e.target.value }))}
-                      className="w-full"
+                      className="w-full accent-[#00C9A7]"
                     />
                   </div>
                 ))}
               </div>
 
-              <div className="flex items-center gap-3">
-                <button type="submit" disabled={saving} className="btn-primary py-2.5 px-6 disabled:opacity-50">
+              <div className="flex items-center gap-4 mt-6">
+                <button type="submit" disabled={saving} className="bg-[#1A1035] text-white font-black uppercase tracking-wider py-4 px-8 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#00C9A7] hover:shadow-[6px_6px_0px_#00C9A7] hover:-translate-y-1 transition-all disabled:opacity-50 w-full sm:w-auto">
                   {saving ? 'Saving...' : '💾 Add Student'}
                 </button>
               </div>
@@ -219,80 +223,82 @@ export default function AdminStudentsPage() {
           </div>
         )}
 
-        <div className="glass-card p-4 flex flex-wrap gap-4 items-end">
-          <div>
-            <label className="block text-[10px] text-gray-500 mb-1">Search</label>
-            <input value={search} onChange={e => setSearch(e.target.value)} className="input-dark py-2 text-sm" placeholder="Name..." style={{ width: 180 }} />
+        <div className="bg-white border-4 border-[#1A1035] p-6 rounded-2xl shadow-[6px_6px_0px_#1A1035] flex flex-wrap gap-4 items-end">
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-xs font-black text-[#1A1035] uppercase tracking-widest mb-2">Search</label>
+            <input value={search} onChange={e => setSearch(e.target.value)} className="w-full bg-[#F8F7FF] border-2 border-[#1A1035] rounded-xl px-4 py-2.5 text-sm font-bold text-[#1A1035] outline-none focus:border-[#6C47FF] focus:shadow-[2px_2px_0px_#6C47FF] transition-all" placeholder="Name..." />
           </div>
-          <div>
-            <label className="block text-[10px] text-gray-500 mb-1">Department</label>
-            <select value={dept} onChange={e => setDept(e.target.value)} className="input-dark py-2 text-sm">
+          <div className="w-[150px]">
+            <label className="block text-xs font-black text-[#1A1035] uppercase tracking-widest mb-2">Department</label>
+            <select value={dept} onChange={e => setDept(e.target.value)} className="w-full bg-[#F8F7FF] border-2 border-[#1A1035] rounded-xl px-4 py-2.5 text-sm font-bold text-[#1A1035] outline-none appearance-none">
               <option value="all">All</option>
               <option value="CS">CS</option>
               <option value="IS">IS</option>
               <option value="ECE">ECE</option>
             </select>
           </div>
-          <div style={{ width: 160 }}>
-            <label className="block text-[10px] text-gray-500 mb-1">Min PRS: {prsMin}</label>
-            <input type="range" min="0" max="100" value={prsMin} onChange={e => setPrsMin(+e.target.value)} />
+          <div className="w-[200px] bg-[#F8F7FF] border-2 border-[#1A1035] p-2.5 rounded-xl">
+            <label className="block text-xs font-black text-[#1A1035] uppercase tracking-widest mb-2">Min PRS: <span className="text-[#6C47FF] bg-white border-2 border-[#1A1035] px-2 py-0.5 rounded shadow-[2px_2px_0px_#1A1035] ml-2">{prsMin}</span></label>
+            <input type="range" min="0" max="100" value={prsMin} onChange={e => setPrsMin(+e.target.value)} className="w-full accent-[#6C47FF]" />
           </div>
-          <button onClick={() => { setSearch(''); setDept('all'); setPrsMin(0); }} className="btn-secondary py-2 px-4 text-xs">Reset</button>
+          <button onClick={() => { setSearch(''); setDept('all'); setPrsMin(0); }} className="bg-white text-[#1A1035] font-black uppercase tracking-wider py-2.5 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all text-xs">Reset Filters</button>
         </div>
 
-        <div className="glass-card p-6 overflow-x-auto">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold text-white">Students ({filtered.length})</h3>
+        <div className="bg-white border-4 border-[#1A1035] p-6 rounded-2xl shadow-[6px_6px_0px_#1A1035] overflow-hidden">
+          <div className="flex items-center justify-between mb-6 border-b-4 border-[#1A1035]/10 pb-4">
+            <h3 className="text-sm font-black text-[#1A1035] uppercase tracking-wider">Students ({filtered.length})</h3>
           </div>
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Dept</th>
-                <th>PRS</th>
-                <th>Aptitude</th>
-                <th>Coding</th>
-                <th>Core</th>
-                <th>Soft</th>
-                <th>Attendance</th>
-                <th>Backlogs</th>
-                <th>Tier</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((s, idx) => {
-                const prsScore = s.prs?.score || 0;
-                const tier = s.prs?.companyTiers[0] || '';
-                return (
-                  <tr key={s.id}>
-                    <td className="text-gray-600">{(page - 1) * PER_PAGE + idx + 1}</td>
-                    <td className="text-white font-medium">{s.name}</td>
-                    <td><span className="badge badge-purple text-xs">{s.department}</span></td>
-                    <td>
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-sm font-bold
-                        ${prsScore >= 75 ? 'bg-emerald-500/15 text-emerald-400' : prsScore >= 50 ? 'bg-yellow-500/15 text-yellow-400' : 'bg-red-500/15 text-red-400'}`}>
-                        {prsScore.toFixed(1)}
-                      </span>
-                    </td>
-                    <td className="text-gray-300">{s.scores?.aptitude}</td>
-                    <td className="text-gray-300">{s.scores?.coding}</td>
-                    <td className="text-gray-300">{s.scores?.core_subjects}</td>
-                    <td className="text-gray-300">{s.scores?.soft_skills}</td>
-                    <td className={(s.scores?.attendance || 0) >= 75 ? 'text-emerald-400' : 'text-red-400'}>{s.scores?.attendance}%</td>
-                    <td>{(s.scores?.backlogs || 0) > 0 ? <span className="badge badge-error text-xs">{s.scores?.backlogs}</span> : <span className="text-gray-600">0</span>}</td>
-                    <td><span className="text-xs text-gray-400">{tier.length > 14 ? tier.slice(0, 14) + '…' : tier}</span></td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b-4 border-[#1A1035]">
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF] border-r-4 border-[#1A1035]">#</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Name</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Dept</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">PRS</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Aptitude</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Coding</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Core</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Soft</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Attendance</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Backlogs</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Tier</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y-2 divide-[#1A1035]/10">
+                {paginated.map((s, idx) => {
+                  const prsScore = s.prs?.score || 0;
+                  const tier = s.prs?.companyTiers[0] || '';
+                  return (
+                    <tr key={s.id} className="hover:bg-[#F8F7FF] transition-colors">
+                      <td className="py-4 px-4 text-[#1A1035]/60 font-black border-r-4 border-[#1A1035]">{(page - 1) * PER_PAGE + idx + 1}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-black">{s.name}</td>
+                      <td className="py-4 px-4"><span className="bg-white text-[#1A1035] border-2 border-[#1A1035] shadow-[2px_2px_0px_#6C47FF] px-2 py-1 text-xs font-black uppercase tracking-wider rounded">{s.department}</span></td>
+                      <td className="py-4 px-4">
+                        <span className={`inline-flex items-center gap-1 px-3 py-1 rounded border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] text-sm font-black
+                          ${prsScore >= 75 ? 'bg-[#00C9A7] text-[#1A1035]' : prsScore >= 50 ? 'bg-[#FFB347] text-[#1A1035]' : 'bg-[#FF4D6D] text-white'}`}>
+                          {prsScore.toFixed(1)}
+                        </span>
+                      </td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.aptitude}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.coding}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.core_subjects}</td>
+                      <td className="py-4 px-4 text-[#1A1035] font-bold">{s.scores?.soft_skills}</td>
+                      <td className={`py-4 px-4 font-black ${(s.scores?.attendance || 0) >= 75 ? 'text-[#00C9A7]' : 'text-[#FF4D6D]'}`}>{s.scores?.attendance}%</td>
+                      <td className="py-4 px-4">{(s.scores?.backlogs || 0) > 0 ? <span className="bg-[#FF4D6D] text-white border-2 border-[#1A1035] px-2 py-0.5 rounded text-xs font-black shadow-[2px_2px_0px_#1A1035]">{s.scores?.backlogs}</span> : <span className="text-[#1A1035]/50 font-bold">0</span>}</td>
+                      <td className="py-4 px-4"><span className="text-xs font-bold text-[#1A1035] bg-[#F8F7FF] border-2 border-[#1A1035] px-2 py-1 rounded whitespace-nowrap">{tier.length > 14 ? tier.slice(0, 14) + '…' : tier}</span></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
           {totalPages > 1 && (
-            <div className="flex items-center justify-between mt-4 text-sm text-gray-400">
-              <span>Page {page} of {totalPages}</span>
-              <div className="flex gap-2">
-                <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="btn-secondary py-1 px-3 text-xs disabled:opacity-40">← Prev</button>
-                <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className="btn-secondary py-1 px-3 text-xs disabled:opacity-40">Next →</button>
+            <div className="flex items-center justify-between mt-6 pt-4 border-t-4 border-[#1A1035]/10 text-sm font-black text-[#1A1035]">
+              <span className="uppercase tracking-widest">Page {page} of {totalPages}</span>
+              <div className="flex gap-4">
+                <button disabled={page === 1} onClick={() => setPage(p => p - 1)} className="bg-white text-[#1A1035] font-black uppercase tracking-wider py-2 px-4 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all text-xs disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_#1A1035]">← Prev</button>
+                <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)} className="bg-[#1A1035] text-white font-black uppercase tracking-wider py-2 px-4 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#6C47FF] hover:shadow-[6px_6px_0px_#6C47FF] hover:-translate-y-1 transition-all text-xs disabled:opacity-40 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_#6C47FF]">Next →</button>
               </div>
             </div>
           )}

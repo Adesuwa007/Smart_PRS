@@ -57,67 +57,72 @@ export default function StudentProgressPage() {
     <DashboardLayout role="student" userName={user?.name || 'Student'}>
       <div className="space-y-6 animate-fade-in">
         <div>
-          <h1 className="text-2xl font-bold text-white">My Progress 📈</h1>
-          <p className="text-sm text-gray-400 mt-1">Track your placement readiness journey over time</p>
+          <h1 className="text-3xl font-black text-[#1A1035] uppercase tracking-tight">My Progress 📈</h1>
+          <p className="text-sm font-bold text-[#1A1035]/60 mt-1">Track your placement readiness journey over time</p>
         </div>
 
         {/* Real user with no data nudge */}
         {!user?.isDemo && !hasRealData && (
-          <div className="glass-card p-6 border border-brand-cyan/20 bg-brand-cyan/5 text-center space-y-3">
-            <p className="text-white font-semibold">No assessment data yet</p>
-            <p className="text-sm text-gray-400">Complete your first assessment to see real progress tracking.</p>
-            <Link href="/dashboard/student/assessments" className="btn-primary py-2.5 px-6 inline-block">
+          <div className="bg-[#00C9A7] border-4 border-[#1A1035] p-6 rounded-2xl shadow-[6px_6px_0px_#1A1035] text-center space-y-4">
+            <p className="text-xl font-black text-[#1A1035] uppercase tracking-tight">No assessment data yet</p>
+            <p className="text-sm font-bold text-[#1A1035]/70">Complete your first assessment to see real progress tracking.</p>
+            <Link href="/dashboard/student/assessments" className="bg-white text-[#1A1035] font-black uppercase tracking-wider py-3 px-8 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all inline-block mt-2">
               Take Assessment →
             </Link>
           </div>
         )}
 
         {/* Summary Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: 'Current PRS', value: prs.score.toFixed(1), sub: '/ 100', color: 'text-emerald-400' },
-            { label: 'PRS Growth', value: `+${prsChange}`, sub: 'since Nov 2025', color: 'text-brand-cyan' },
-            { label: 'Trend', value: trend === 'improving' ? '↑ Improving' : '↓ Declining', sub: '6-month view', color: trend === 'improving' ? 'text-emerald-400' : 'text-red-400' },
-            { label: 'PRS Goal', value: `${targetPRS}`, sub: `${pointsToGoal} pts to go`, color: 'text-brand-purple' },
+            { label: 'Current PRS', value: prs.score.toFixed(1), sub: '/ 100', color: 'text-[#1A1035]', bg: 'bg-[#00C9A7]' },
+            { label: 'PRS Growth', value: `+${prsChange}`, sub: 'since Nov 2025', color: 'text-[#1A1035]', bg: 'bg-[#F8F7FF]' },
+            { label: 'Trend', value: trend === 'improving' ? '↑ Improving' : '↓ Declining', sub: '6-month view', color: trend === 'improving' ? 'text-[#00C9A7]' : 'text-[#FF4D6D]', bg: 'bg-white' },
+            { label: 'PRS Goal', value: `${targetPRS}`, sub: `${pointsToGoal} pts to go`, color: 'text-[#6C47FF]', bg: 'bg-[#F8F7FF]' },
           ].map((s, i) => (
-            <div key={i} className="stat-card">
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">{s.label}</p>
-              <p className={`text-2xl font-extrabold ${s.color}`}>{s.value}</p>
-              <p className="text-xs text-gray-500 mt-1">{s.sub}</p>
+            <div key={i} className={`${s.bg} border-4 border-[#1A1035] p-6 rounded-2xl shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 hover:shadow-[8px_8px_0px_#1A1035] transition-all`}>
+              <p className="text-[10px] font-black text-[#1A1035]/60 uppercase tracking-widest mb-2">{s.label}</p>
+              <p className={`text-3xl font-black ${s.color} mb-1`}>{s.value}</p>
+              <p className="text-xs font-bold text-[#1A1035]/50">{s.sub}</p>
             </div>
           ))}
         </div>
 
         {/* PRS Over Time */}
-        <div className="glass-card p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-base font-semibold text-white">PRS Score Over Time</h3>
-            <span className="badge badge-success text-xs">+{prsChange} points in 6 months 🚀</span>
+        <div className="bg-white border-4 border-[#1A1035] p-6 rounded-2xl shadow-[6px_6px_0px_#1A1035]">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+            <h3 className="text-sm font-black text-[#1A1035] uppercase tracking-wider">PRS Score Over Time</h3>
+            <span className="bg-[#00C9A7] text-[#1A1035] px-3 py-1 text-xs font-black uppercase tracking-widest border-2 border-[#1A1035] rounded shadow-[2px_2px_0px_#1A1035]">+{prsChange} points in 6 months 🚀</span>
           </div>
           <ProgressLineChart data={PRS_HISTORY} />
         </div>
 
         {/* Monthly Breakdown Table */}
-        <div className="glass-card p-6">
-          <h3 className="text-base font-semibold text-white mb-4">Monthly Score Breakdown</h3>
+        <div className="bg-white border-4 border-[#1A1035] p-6 rounded-2xl shadow-[6px_6px_0px_#1A1035] overflow-hidden">
+          <h3 className="text-sm font-black text-[#1A1035] uppercase tracking-wider mb-6 border-b-4 border-[#1A1035]/10 pb-4">Monthly Score Breakdown</h3>
           <div className="overflow-x-auto">
-            <table className="data-table">
+            <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
-                <tr>
-                  <th>Month</th><th>Aptitude</th><th>Coding</th><th>Core</th><th>Soft Skills</th><th>Attendance</th>
+                <tr className="border-b-4 border-[#1A1035]">
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF] border-r-4 border-[#1A1035]">Month</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Aptitude</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Coding</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Core</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Soft Skills</th>
+                  <th className="py-4 px-4 text-xs font-black text-[#1A1035] uppercase tracking-wider bg-[#F8F7FF]">Attendance</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y-2 divide-[#1A1035]/10">
                 {MONTHLY_SCORES.map((row, i) => (
-                  <tr key={i}>
-                    <td className="text-white font-medium">{row.month}</td>
+                  <tr key={i} className="hover:bg-[#F8F7FF] transition-colors">
+                    <td className="py-4 px-4 text-[#1A1035] font-black border-r-4 border-[#1A1035]">{row.month}</td>
                     {[row.aptitude, row.coding, row.core, row.soft, row.attendance].map((val, vi) => (
-                      <td key={vi}>
-                        <div className="flex items-center gap-2">
-                          <div className="w-16 h-1.5 bg-brand-border rounded-full">
-                            <div className="h-full rounded-full bg-brand-cyan" style={{ width: `${val}%` }} />
+                      <td key={vi} className="py-4 px-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1 max-w-[80px] h-2 bg-white border-2 border-[#1A1035] rounded-full overflow-hidden">
+                            <div className="h-full bg-[#00C9A7]" style={{ width: `${val}%` }} />
                           </div>
-                          <span className="text-gray-300 text-sm">{val}</span>
+                          <span className="text-[#1A1035] font-bold text-sm w-6">{val}</span>
                         </div>
                       </td>
                     ))}
@@ -134,52 +139,55 @@ export default function StudentProgressPage() {
             studentScores={{ aptitude: scores.aptitude, coding: scores.coding, core_subjects: scores.core_subjects, soft_skills: scores.soft_skills, attendance: scores.attendance }}
             batchAverage={batchAvg}
           />
-          <div className="glass-card p-6">
-            <h3 className="text-base font-semibold text-white mb-1">Goal Tracker</h3>
-            <p className="text-xs text-gray-500 mb-4">Set your target PRS and track how close you are.</p>
+          <div className="bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl shadow-[6px_6px_0px_#1A1035] space-y-6">
+            <div className="border-b-4 border-[#1A1035]/10 pb-4">
+              <h3 className="text-sm font-black text-[#1A1035] uppercase tracking-wider mb-2">Goal Tracker</h3>
+              <p className="text-xs font-bold text-[#1A1035]/60">Set your target PRS and track how close you are.</p>
+            </div>
 
             {/* Target PRS slider */}
-            <div className="mb-5">
-              <div className="flex justify-between text-xs text-gray-400 mb-1">
-                <span>Target PRS</span>
-                <span className="text-brand-cyan font-bold">{targetPRS}</span>
+            <div className="bg-[#F8F7FF] border-2 border-[#1A1035] p-6 rounded-xl shadow-[4px_4px_0px_#1A1035]">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-xs font-black text-[#1A1035] uppercase tracking-widest">Target PRS</span>
+                <span className="text-xl font-black text-[#1A1035] bg-white border-2 border-[#1A1035] px-3 py-1 rounded shadow-[2px_2px_0px_#6C47FF]">{targetPRS}</span>
               </div>
               <input
                 type="range" min="50" max="100" value={targetPRS}
                 onChange={e => handleTargetChange(+e.target.value)}
-                className="w-full"
+                className="w-full accent-[#6C47FF] mb-4"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs font-bold text-[#1A1035] bg-white border-2 border-[#1A1035] p-2 rounded text-center shadow-[2px_2px_0px_#1A1035]">
                 {Number(pointsToGoal) > 0
                   ? `You need +${pointsToGoal} points to reach your goal`
                   : '🎉 Goal achieved! Set a higher target.'}
               </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {[
-                { label: `Coding → 95`, current: scores.coding, target: 95, color: '#06B6D4' },
-                { label: `Aptitude → 90`, current: scores.aptitude, target: 90, color: '#8B5CF6' },
-                { label: `Core → 85`, current: scores.core_subjects, target: 85, color: '#10B981' },
-                { label: `Soft Skills → 80`, current: scores.soft_skills, target: 80, color: '#F59E0B' },
-                { label: `PRS → ${targetPRS}`, current: prs.score, target: targetPRS, color: '#06B6D4' },
+                { label: `Coding → 95`, current: scores.coding, target: 95, color: '#00C9A7' },
+                { label: `Aptitude → 90`, current: scores.aptitude, target: 90, color: '#6C47FF' },
+                { label: `Core → 85`, current: scores.core_subjects, target: 85, color: '#00C9A7' },
+                { label: `Soft Skills → 80`, current: scores.soft_skills, target: 80, color: '#FFB347' },
+                { label: `PRS → ${targetPRS}`, current: prs.score, target: targetPRS, color: '#1A1035' },
               ].map((g, i) => (
                 <div key={i}>
-                  <div className="flex justify-between text-xs text-gray-400 mb-1">
+                  <div className="flex justify-between text-[10px] font-black text-[#1A1035]/60 uppercase tracking-widest mb-1.5">
                     <span>{g.label}</span>
-                    <span>{g.current.toFixed(0)} / {g.target}</span>
+                    <span className="text-[#1A1035]">{g.current.toFixed(0)} / {g.target}</span>
                   </div>
-                  <div className="h-2 bg-brand-border rounded-full overflow-hidden">
-                    <div className="h-full rounded-full transition-all duration-1000"
+                  <div className="h-2.5 bg-[#F8F7FF] border-2 border-[#1A1035] rounded-full overflow-hidden">
+                    <div className="h-full transition-all duration-1000"
                       style={{ width: `${Math.min(100, (g.current / g.target) * 100)}%`, backgroundColor: g.color }} />
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-5 p-3 bg-brand-cyan/5 border border-brand-cyan/20 rounded-xl">
-              <p className="text-xs text-brand-cyan font-semibold">💡 SmartCoach Tip</p>
-              <p className="text-xs text-gray-400 mt-1">
+            <div className="mt-6 p-4 bg-[#6C47FF] border-4 border-[#1A1035] rounded-xl shadow-[4px_4px_0px_#1A1035] relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-16 h-16 bg-white/20 rounded-full blur-xl -mr-8 -mt-8"></div>
+              <p className="text-xs font-black text-white uppercase tracking-widest mb-2 flex items-center gap-2"><span className="text-lg bg-white rounded-full w-6 h-6 flex items-center justify-center shadow-[2px_2px_0px_#1A1035] border-2 border-[#1A1035]">💡</span> SmartCoach Tip</p>
+              <p className="text-sm font-bold text-white/90 leading-relaxed pl-8">
                 {prs.score >= targetPRS
                   ? 'You have reached your PRS goal! Raise the bar and keep improving.'
                   : `Focus on your weakest area to close the ${pointsToGoal}-point gap fastest.`}

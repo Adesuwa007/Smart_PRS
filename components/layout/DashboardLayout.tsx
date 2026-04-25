@@ -56,72 +56,75 @@ export default function DashboardLayout({ role, children }: Props) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-brand-dark gradient-mesh flex">
+    <div className="min-h-screen bg-[#F8F7FF] flex">
       {/* Mobile overlay */}
       {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />}
 
       {/* Sidebar */}
-      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-        <div className="px-5 mb-8">
+      <aside className={`fixed left-0 top-0 h-full bg-white border-r-3 border-[#1A1035] z-40 flex flex-col transition-transform duration-300 w-[240px] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+        <div className="px-5 mb-8 mt-5 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-cyan to-brand-purple flex items-center justify-center text-white font-bold text-sm">S</div>
-            <span className="text-lg font-bold text-white">Smart<span className="text-brand-cyan">PRS</span></span>
+            <div className="w-8 h-8 rounded-lg bg-white border-2 border-[#1A1035] flex items-center justify-center text-[#1A1035] font-black text-sm shadow-[2px_2px_0px_#6C47FF]">S</div>
+            <span className="text-xl font-black text-[#1A1035] uppercase tracking-tighter">Smart<span className="text-[#6C47FF]">PRS</span></span>
           </Link>
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden text-[#1A1035]">✕</button>
         </div>
-        <nav className="px-3 space-y-1">
+        <nav className="px-3 space-y-2 flex-1">
           {nav.map(item => (
             <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-300 ${
+              className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm transition-all duration-300 font-bold ${
                 pathname === item.href
-                  ? 'bg-gradient-to-r from-cyan-500/85 to-violet-500/85 text-white font-semibold shadow-[0_0_25px_rgba(6,182,212,0.25)]'
-                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-[#1A1035] text-white shadow-[3px_3px_0px_#6C47FF]'
+                  : 'text-[#1A1035]/50 hover:bg-[#EDE9FE] hover:text-[#1A1035]'
               }`}>
-              <span>{item.icon}</span>{item.label}
+              <span className="text-lg">{item.icon}</span>
+              <span>{item.label}</span>
               {displayRole === 'admin' && item.href === '/dashboard/admin' && unreadViolations > 0 && (
-                <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-red-500/20 px-2 py-0.5 text-[10px] text-red-300 border border-red-400/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+                <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-[#FF4D6D] px-2 py-0.5 text-[10px] text-white font-black">
                   {unreadViolations}
                 </span>
               )}
             </Link>
           ))}
         </nav>
-        <div className="absolute bottom-6 left-0 right-0 px-5">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-brand-dark/50 border border-brand-border/50">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-cyan/30 to-brand-purple/30 ring-1 ring-cyan-400/60 shadow-[0_0_14px_rgba(6,182,212,0.45)] flex items-center justify-center text-xs font-bold text-white">
+        <div className="border-t-2 border-[#1A1035]/10 p-4 bg-white">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] border-2 border-[#1A1035] flex items-center justify-center text-[#6C47FF] font-black text-sm">
               {displayName[0] || 'U'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-white font-medium truncate">{displayName}</p>
-              <p className="text-[10px] text-gray-500 capitalize">{displayRole}</p>
+              <p className="text-sm font-bold text-[#1A1035] truncate">{displayName}</p>
+              <p className="text-[10px] font-bold text-[#1A1035]/50 uppercase tracking-wider">{displayRole === 'admin' ? 'User' : displayRole}</p>
             </div>
-            <button onClick={logout} className="text-gray-500 hover:text-red-400 text-xs transition" title="Logout">⏻</button>
+            <button onClick={logout} className="text-[#1A1035]/40 hover:text-[#FF4D6D] transition" title="Logout">⏻</button>
           </div>
         </div>
       </aside>
 
       {/* Main */}
-      <div className="flex-1 md:ml-[260px]">
+      <div className="flex-1 md:ml-[240px] flex flex-col min-h-screen">
         {/* Top bar */}
-        <header className="sticky top-0 z-20 bg-[#050508]/75 backdrop-blur-xl border-b border-white/10 px-6 py-3 flex items-center justify-between">
-          <button onClick={() => setSidebarOpen(true)} className="md:hidden text-gray-400 hover:text-white text-xl">☰</button>
-          <div className="hidden md:block" />
-          <div className="flex items-center gap-3">
-            <div className={`badge text-[10px] ${userPlan === 'pro' || userPlan === 'enterprise' ? 'badge-cyan' : 'badge-cyan'}`}>
+        <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b-2 border-[#1A1035]/10 px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setSidebarOpen(true)} className="md:hidden text-[#1A1035] p-2">☰</button>
+            <h2 className="text-lg font-black text-[#1A1035] hidden sm:block">
+              Welcome back 👋
+            </h2>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] bg-white text-[#1A1035]">
               {userPlan === 'pro' ? 'PRO PLAN' : userPlan === 'enterprise' ? 'ENTERPRISE' : 'FREE PLAN'}
             </div>
             <div className="relative">
-              <button onClick={() => setNotifOpen(!notifOpen)} className="relative w-9 h-9 rounded-xl bg-brand-surface border border-brand-border flex items-center justify-center text-sm hover:border-brand-cyan/30 transition">
-                🔔
-                <span className={`absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold text-white flex items-center justify-center ${unreadViolations > 0 ? 'bg-red-500 animate-pulse' : 'bg-brand-cyan'}`}>
-                  {unreadViolations > 0 ? unreadViolations : 2}
-                </span>
+              <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-2 rounded-xl border-2 border-[#1A1035]/10 hover:bg-[#EDE9FE] transition-colors">
+                <span className="text-xl">🔔</span>
+                <span className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white ${unreadViolations > 0 ? 'bg-[#FF4D6D] animate-pulse' : 'bg-[#00C9A7]'}`}></span>
               </button>
               {notifOpen && (
-                <div className="absolute right-0 mt-2 w-72 glass-card p-3 space-y-2 z-50" style={{ borderRadius: '16px' }}>
-                  <p className="text-xs font-semibold text-white px-2 pb-2 border-b border-brand-border">Notifications</p>
+                <div className="absolute right-0 mt-3 w-72 bold-card bg-white p-3 space-y-2 z-50">
+                  <p className="text-xs font-black text-[#1A1035] px-2 pb-2 border-b-2 border-[#1A1035]/10 uppercase tracking-wider">Notifications</p>
                   {['📊 Your coding score was updated to 88!', '🎯 New assessment available: Core Subjects Mock Test'].map((n, i) => (
-                    <div key={i} className="p-2 rounded-lg text-xs text-gray-300 hover:bg-brand-surface/50 cursor-pointer">{n}</div>
+                    <div key={i} className="p-3 rounded-xl border-2 border-transparent hover:border-[#1A1035]/10 text-xs font-bold text-[#1A1035]/70 hover:bg-[#F8F7FF] cursor-pointer transition-all">{n}</div>
                   ))}
                 </div>
               )}
@@ -130,7 +133,9 @@ export default function DashboardLayout({ role, children }: Props) {
         </header>
 
         {/* Content */}
-        <main className="p-6">{children}</main>
+        <main className="flex-1 p-6 md:p-8">
+          {children}
+        </main>
       </div>
     </div>
   );

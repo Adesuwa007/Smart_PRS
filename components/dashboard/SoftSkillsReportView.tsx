@@ -3,8 +3,8 @@ import type { SoftSkillsReport } from '@/lib/soft-skills-engine';
 
 function Bar({ value, color }: { value: number; color: string }) {
   return (
-    <div className="w-full h-2.5 bg-white/5 rounded-full overflow-hidden mt-1">
-      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${value}%`, background: color }} />
+    <div className="w-full h-3 bg-[#F8F7FF] border-2 border-[#1A1035] rounded-full overflow-hidden mt-1 shadow-[inset_0px_2px_4px_rgba(0,0,0,0.05)]">
+      <div className="h-full border-r-2 border-[#1A1035] transition-all duration-700" style={{ width: `${value}%`, background: color }} />
     </div>
   );
 }
@@ -49,80 +49,81 @@ export default function SoftSkillsReportView({ report, studentName }: { report: 
     pw.onload = () => { pw.print(); };
   };
 
-  const gcl = report.grade === 'Excellent' ? 'text-emerald-400 bg-emerald-500/20' :
-    report.grade === 'Good' ? 'text-cyan-400 bg-cyan-500/20' :
-    report.grade === 'Average' ? 'text-yellow-400 bg-yellow-500/20' : 'text-red-400 bg-red-500/20';
-
   const wl = report.avgWords >= 80 ? 'Excellent' : report.avgWords >= 40 ? 'Good' : report.avgWords >= 15 ? 'Short' : 'Too short';
-  const wc = report.avgWords >= 40 ? 'text-emerald-400' : report.avgWords >= 15 ? 'text-yellow-400' : 'text-red-400';
 
   return (
     <div className="space-y-5 animate-fade-in">
       {/* 1. Score */}
-      <div className="text-center pb-5 border-b border-white/10">
-        <div className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-purple my-2">{report.overallScore}</div>
-        <span className={`text-xs font-bold uppercase px-3 py-1 rounded-full ${gcl}`}>{report.grade}</span>
-        <div className="mt-3">
-          <button onClick={downloadPDF} className="text-xs font-semibold px-4 py-2 rounded-lg bg-brand-cyan/20 text-brand-cyan hover:bg-brand-cyan/30 transition">⬇ Download as PDF</button>
+      <div className="text-center pb-6 border-b-4 border-[#1A1035]/10">
+        <div className="text-6xl font-black text-[#1A1035] my-2 drop-shadow-[4px_4px_0px_rgba(26,16,53,0.2)]">{report.overallScore}</div>
+        <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] ${
+          report.grade === 'Excellent' ? 'bg-[#00C9A7] text-[#1A1035]' : 
+          report.grade === 'Good' ? 'bg-[#6C47FF] text-white' : 
+          report.grade === 'Average' ? 'bg-[#FFB347] text-[#1A1035]' : 'bg-[#FF4D6D] text-white'
+        }`}>{report.grade}</span>
+        <div className="mt-4">
+          <button onClick={downloadPDF} className="text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl bg-white border-2 border-[#1A1035] text-[#1A1035] shadow-[2px_2px_0px_#1A1035] hover:shadow-[4px_4px_0px_#1A1035] hover:-translate-y-0.5 transition-all">⬇ Download as PDF</button>
         </div>
       </div>
 
       {/* 2. Metrics */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="p-3 rounded-xl bg-white/3 border border-white/5 text-center">
-          <p className="text-[10px] text-gray-500 uppercase mb-1">🎯 Confidence</p>
-          <p className="text-xl font-bold text-cyan-400">{report.avgConfidence}</p>
-          <Bar value={report.avgConfidence} color="#06B6D4" />
+      <div className="grid grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl bg-[#F8F7FF] border-2 border-[#1A1035] text-center shadow-[4px_4px_0px_#1A1035]">
+          <p className="text-[10px] text-[#1A1035]/60 font-black uppercase tracking-widest mb-1">🎯 Confidence</p>
+          <p className="text-2xl font-black text-[#1A1035] mb-1">{report.avgConfidence}</p>
+          <Bar value={report.avgConfidence} color="#00C9A7" />
         </div>
-        <div className="p-3 rounded-xl bg-white/3 border border-white/5 text-center">
-          <p className="text-[10px] text-gray-500 uppercase mb-1">💬 Clarity</p>
-          <p className="text-xl font-bold text-purple-400">{report.avgClarity}</p>
-          <Bar value={report.avgClarity} color="#8B5CF6" />
+        <div className="p-4 rounded-xl bg-[#F8F7FF] border-2 border-[#1A1035] text-center shadow-[4px_4px_0px_#1A1035]">
+          <p className="text-[10px] text-[#1A1035]/60 font-black uppercase tracking-widest mb-1">💬 Clarity</p>
+          <p className="text-2xl font-black text-[#1A1035] mb-1">{report.avgClarity}</p>
+          <Bar value={report.avgClarity} color="#6C47FF" />
         </div>
-        <div className="p-3 rounded-xl bg-white/3 border border-white/5 text-center">
-          <p className="text-[10px] text-gray-500 uppercase mb-1">📝 Words</p>
-          <p className="text-xl font-bold text-gray-200">{report.avgWords}</p>
-          <p className={`text-[10px] mt-1 ${wc}`}>{wl}</p>
+        <div className="p-4 rounded-xl bg-[#F8F7FF] border-2 border-[#1A1035] text-center shadow-[4px_4px_0px_#1A1035]">
+          <p className="text-[10px] text-[#1A1035]/60 font-black uppercase tracking-widest mb-1">📝 Words</p>
+          <p className="text-2xl font-black text-[#1A1035]">{report.avgWords}</p>
+          <p className={`text-[10px] font-black uppercase tracking-widest mt-1 ${
+            report.avgWords >= 40 ? 'text-[#00C9A7]' : report.avgWords >= 15 ? 'text-[#FFB347]' : 'text-[#FF4D6D]'
+          }`}>{wl}</p>
         </div>
       </div>
 
       {/* 3. What Worked */}
       {report.whatWorked.length > 0 && (
-        <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-          <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">✅ What Worked</h4>
-          {report.whatWorked.map((w, i) => <p key={i} className="text-sm text-emerald-300/80 py-1">✅ {w}</p>)}
+        <div className="p-5 rounded-xl bg-[#00C9A7]/10 border-2 border-[#1A1035] shadow-[4px_4px_0px_#1A1035]">
+          <h4 className="text-[10px] font-black text-[#00C9A7] uppercase tracking-widest mb-3 bg-[#1A1035] inline-block px-2 py-1 rounded">✅ What Worked</h4>
+          {report.whatWorked.map((w, i) => <p key={i} className="text-sm font-bold text-[#1A1035] py-1 flex items-start gap-2"><span className="shrink-0 mt-0.5">✅</span> <span>{w}</span></p>)}
         </div>
       )}
 
       {/* 4. What to Improve */}
       {report.whatToImprove.length > 0 && (
-        <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20">
-          <h4 className="text-xs font-bold text-red-400 uppercase tracking-wider mb-2">❌ What to Improve</h4>
+        <div className="p-5 rounded-xl bg-[#FF4D6D]/10 border-2 border-[#1A1035] shadow-[4px_4px_0px_#1A1035]">
+          <h4 className="text-[10px] font-black text-[#FF4D6D] uppercase tracking-widest mb-3 bg-[#1A1035] inline-block px-2 py-1 rounded">❌ What to Improve</h4>
           {report.whatToImprove.map((w, i) => (
-            <div key={i} className="py-1.5">
-              <p className="text-sm text-red-300/80">❌ {w.issue}</p>
-              <p className="text-xs text-gray-500 ml-5 mt-0.5">→ {w.tip}</p>
+            <div key={i} className="py-2">
+              <p className="text-sm font-bold text-[#1A1035] flex items-start gap-2"><span className="shrink-0 mt-0.5">❌</span> <span>{w.issue}</span></p>
+              <p className="text-xs font-bold text-[#1A1035]/60 ml-7 mt-1 flex items-start gap-1"><span className="shrink-0">→</span> <span>{w.tip}</span></p>
             </div>
           ))}
         </div>
       )}
 
       {/* 5. Fillers + Top Tip */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="p-4 rounded-xl bg-white/3 border border-white/5">
-          <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-2">🗣️ Filler Words</h4>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-5 rounded-xl bg-white border-2 border-[#1A1035] shadow-[4px_4px_0px_#1A1035]">
+          <h4 className="text-[10px] font-black text-[#1A1035] uppercase tracking-widest mb-3 border-b-2 border-[#1A1035]/10 pb-2">🗣️ Filler Words</h4>
           {report.totalFillers === 0 ? (
-            <p className="text-sm text-emerald-400">✅ None detected — excellent!</p>
+            <p className="text-sm font-bold text-[#00C9A7]">✅ None detected — excellent!</p>
           ) : (
             <div>
-              <p className="text-sm text-yellow-400 mb-2">{report.totalFillers} filler{report.totalFillers > 1 ? 's' : ''} found</p>
-              <div className="flex flex-wrap gap-1.5">{report.allFillers.map(f => <span key={f} className="px-2 py-0.5 text-[10px] font-bold bg-yellow-500/20 text-yellow-400 rounded-full">{f}</span>)}</div>
+              <p className="text-sm font-bold text-[#FFB347] mb-3">{report.totalFillers} filler{report.totalFillers > 1 ? 's' : ''} found</p>
+              <div className="flex flex-wrap gap-2">{report.allFillers.map(f => <span key={f} className="px-2 py-1 text-[10px] font-black bg-[#FFB347] border-2 border-[#1A1035] text-[#1A1035] rounded shadow-[2px_2px_0px_#1A1035] uppercase tracking-widest">{f}</span>)}</div>
             </div>
           )}
         </div>
-        <div className="p-4 rounded-xl bg-brand-cyan/5 border border-brand-cyan/20">
-          <h4 className="text-xs font-bold text-brand-cyan uppercase tracking-wider mb-2">💡 Top Recommendation</h4>
-          <p className="text-sm text-gray-300 leading-relaxed">{report.topTip}</p>
+        <div className="p-5 rounded-xl bg-[#6C47FF]/10 border-2 border-[#1A1035] shadow-[4px_4px_0px_#1A1035]">
+          <h4 className="text-[10px] font-black text-[#6C47FF] uppercase tracking-widest mb-3 border-b-2 border-[#1A1035]/10 pb-2">💡 Top Recommendation</h4>
+          <p className="text-sm font-bold text-[#1A1035] leading-relaxed">{report.topTip}</p>
         </div>
       </div>
     </div>

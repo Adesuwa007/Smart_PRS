@@ -208,33 +208,32 @@ export default function SoftSkillsAnalyzerPage() {
     setTimeLeft(TIMER_SECONDS);
   };
 
-  const wcColor = wordCount >= 20 ? 'text-emerald-400' : wordCount >= 10 ? 'text-yellow-400' : 'text-red-400';
-  const wcIcon = wordCount >= 20 ? '✓' : wordCount >= 10 ? '~' : '✗';
 
   return (
     <DashboardLayout role="student" userName={studentName}>
       <Toaster position="top-center" />
       <div className="max-w-3xl mx-auto space-y-5 animate-fade-in">
         <div>
-          <h1 className="text-2xl font-bold text-white">Soft Skills Analyzer 🎤</h1>
-          <p className="text-sm text-gray-400 mt-1">1 question · 45 seconds · voice only</p>
+          <h1 className="text-3xl font-black text-[#1A1035] uppercase tracking-tight">Soft Skills Analyzer 🎤</h1>
+          <p className="text-sm font-bold text-[#1A1035]/60 mt-1">1 question · 45 seconds · voice only</p>
         </div>
 
         {/* ═══ IDLE ═══ */}
         {phase === 'idle' && (
-          <div className="glass-card p-8 text-center space-y-5">
-            <div className="w-20 h-20 bg-brand-surface rounded-full flex items-center justify-center mx-auto border border-brand-border">
-              <span className="text-4xl">🎤</span>
+          <div className="bg-white border-4 border-[#1A1035] p-8 sm:p-12 text-center rounded-2xl shadow-[8px_8px_0px_#1A1035] space-y-6">
+            <div className="w-24 h-24 bg-[#F8F7FF] rounded-full flex items-center justify-center mx-auto border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035]">
+              <span className="text-5xl animate-bounce">🎤</span>
             </div>
-            <h2 className="text-xl font-bold text-white">Mock Interview</h2>
-            <p className="text-sm text-gray-400 max-w-md mx-auto">
+            <h2 className="text-2xl font-black text-[#1A1035] uppercase tracking-tight">Mock Interview</h2>
+            <p className="text-sm font-bold text-[#1A1035]/70 max-w-md mx-auto leading-relaxed">
               Answer one interview question using your voice. Your camera and mic will activate. You have 45 seconds.
             </p>
-            <div className="glass-card p-4 mx-auto max-w-md border border-brand-cyan/20 bg-brand-cyan/5">
-              <p className="text-xs text-brand-cyan font-bold uppercase tracking-wider mb-1">Question</p>
-              <p className="text-base text-white font-semibold">{QUESTION}</p>
+            <div className="bg-[#1A1035] text-white border-4 border-[#1A1035] p-6 rounded-xl mx-auto max-w-md shadow-[6px_6px_0px_#00C9A7] transform -rotate-1 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#00C9A7] rounded-full blur-xl -mr-10 -mt-10 opacity-30"></div>
+              <p className="text-[10px] font-black text-[#00C9A7] uppercase tracking-widest mb-2 relative z-10">Question</p>
+              <p className="text-lg font-black text-white relative z-10 leading-relaxed">{QUESTION}</p>
             </div>
-            <button onClick={startSession} className="btn-primary py-4 px-10 text-lg shadow-lg shadow-brand-cyan/20">
+            <button onClick={startSession} className="bg-[#00C9A7] text-[#1A1035] font-black uppercase tracking-wider py-4 px-10 rounded-xl border-4 border-[#1A1035] shadow-[6px_6px_0px_#1A1035] hover:shadow-[8px_8px_0px_#1A1035] hover:-translate-y-1 transition-all text-lg mt-4 inline-block">
               🎬 Start Recording
             </button>
           </div>
@@ -242,10 +241,10 @@ export default function SoftSkillsAnalyzerPage() {
 
         {/* ═══ RECORDING ═══ */}
         {phase === 'recording' && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* BIG Camera — centered, main element */}
-            <div className="relative mx-auto" style={{ maxWidth: '520px' }}>
-              <div className="rounded-2xl overflow-hidden border-2 border-brand-cyan/50 bg-black relative" style={{ height: '360px' }}>
+            <div className="relative mx-auto bg-white border-4 border-[#1A1035] rounded-2xl shadow-[8px_8px_0px_#1A1035] p-2" style={{ maxWidth: '520px' }}>
+              <div className="rounded-xl overflow-hidden bg-black relative border-2 border-[#1A1035]" style={{ height: '360px' }}>
                 {/* Video always rendered so ref is always mounted — hidden when no stream */}
                 <video
                   ref={videoRef}
@@ -261,27 +260,27 @@ export default function SoftSkillsAnalyzerPage() {
                   }}
                 />
                 {!cameraActive && (
-                  <div className="flex items-center justify-center h-full text-gray-500 text-sm text-center p-4">
+                  <div className="flex items-center justify-center h-full text-white/50 text-sm font-bold text-center p-4">
                     {cameraError || '📷 Camera loading...'}
                   </div>
                 )}
                 {/* Recording indicator */}
                 {isListening && (
-                  <div className="absolute top-4 left-4 flex items-center gap-2 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                    <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-                    <span className="text-xs text-red-400 font-bold uppercase tracking-wider">REC</span>
+                  <div className="absolute top-4 left-4 flex items-center gap-2 bg-[#1A1035] px-3 py-1.5 rounded border-2 border-[#1A1035] shadow-[2px_2px_0px_#FF4D6D]">
+                    <div className="w-3 h-3 rounded-full bg-[#FF4D6D] animate-pulse border border-white" />
+                    <span className="text-xs text-white font-black uppercase tracking-widest">REC</span>
                   </div>
                 )}
                 {/* Timer overlay */}
-                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  <span className={`text-lg font-mono font-bold ${timeLeft <= 10 ? 'text-red-400' : 'text-white'}`}>
+                <div className="absolute top-4 right-4 bg-white border-2 border-[#1A1035] px-4 py-1.5 rounded shadow-[2px_2px_0px_#1A1035]">
+                  <span className={`text-lg font-black ${timeLeft <= 10 ? 'text-[#FF4D6D]' : 'text-[#1A1035]'}`}>
                     {timeLeft}s
                   </span>
                 </div>
                 {/* Word count overlay */}
-                <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  <span className={`text-sm font-bold ${wcColor}`}>
-                    Words: {wordCount} {wcIcon}
+                <div className="absolute bottom-4 left-4 bg-white border-2 border-[#1A1035] px-3 py-1.5 rounded shadow-[2px_2px_0px_#1A1035]">
+                  <span className={`text-xs font-black uppercase tracking-widest ${wordCount >= 20 ? 'text-[#00C9A7]' : wordCount >= 10 ? 'text-[#FFB347]' : 'text-[#FF4D6D]'}`}>
+                    Words: {wordCount} {wordCount >= 20 ? '✓' : wordCount >= 10 ? '~' : '✕'}
                   </span>
                 </div>
               </div>
@@ -289,54 +288,55 @@ export default function SoftSkillsAnalyzerPage() {
 
             {/* Timer bar */}
             <div className="mx-auto" style={{ maxWidth: '520px' }}>
-              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+              <div className="h-3 bg-white border-2 border-[#1A1035] rounded-full overflow-hidden shadow-[2px_2px_0px_#1A1035]">
                 <div
-                  className={`h-full rounded-full transition-all duration-1000 ${timeLeft <= 10 ? 'bg-red-500' : 'bg-brand-cyan'}`}
+                  className={`h-full transition-all duration-1000 ${timeLeft <= 10 ? 'bg-[#FF4D6D]' : 'bg-[#6C47FF]'}`}
                   style={{ width: `${(timeLeft / TIMER_SECONDS) * 100}%` }}
                 />
               </div>
             </div>
 
             {/* Question below camera */}
-            <div className="glass-card p-5 mx-auto text-center" style={{ maxWidth: '520px' }}>
-              <p className="text-xs text-brand-cyan font-bold uppercase tracking-wider mb-2">Your Question</p>
-              <p className="text-lg text-white font-semibold">{QUESTION}</p>
+            <div className="bg-[#1A1035] text-white border-4 border-[#1A1035] p-6 rounded-xl mx-auto text-center shadow-[6px_6px_0px_#00C9A7] relative overflow-hidden" style={{ maxWidth: '520px' }}>
+               <div className="absolute top-0 right-0 w-24 h-24 bg-[#00C9A7] rounded-full blur-xl -mr-10 -mt-10 opacity-30"></div>
+              <p className="text-[10px] font-black text-[#00C9A7] uppercase tracking-widest mb-2 relative z-10">Your Question</p>
+              <p className="text-lg font-black text-white relative z-10 leading-relaxed">{QUESTION}</p>
             </div>
 
             {/* Live transcript */}
-            <div className="glass-card p-4 mx-auto" style={{ maxWidth: '520px' }}>
-              <div className="flex items-center justify-between mb-3">
+            <div className="bg-white border-4 border-[#1A1035] p-6 rounded-xl mx-auto shadow-[6px_6px_0px_#1A1035]" style={{ maxWidth: '520px' }}>
+              <div className="flex items-center justify-between mb-4 border-b-4 border-[#1A1035]/10 pb-4">
                 <div className="flex items-center gap-2">
                   {isListening ? (
-                    <><div className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" /><span className="text-xs text-red-400 font-semibold">Listening...</span></>
+                    <><div className="w-3 h-3 rounded-full bg-[#FF4D6D] border border-[#1A1035] animate-pulse" /><span className="text-xs font-black text-[#1A1035] uppercase tracking-widest">Listening...</span></>
                   ) : (
-                    <><div className="w-2.5 h-2.5 rounded-full bg-gray-600" /><span className="text-xs text-gray-500">Waiting...</span></>
+                    <><div className="w-3 h-3 rounded-full bg-[#1A1035]/30 border border-[#1A1035]" /><span className="text-xs font-black text-[#1A1035]/60 uppercase tracking-widest">Waiting...</span></>
                   )}
                 </div>
-                <span className={`text-sm font-bold ${wcColor}`}>
-                  {wordCount} words {wcIcon}
+                <span className={`text-xs font-black uppercase tracking-widest bg-[#F8F7FF] px-2 py-1 rounded border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] ${wordCount >= 20 ? 'text-[#00C9A7]' : wordCount >= 10 ? 'text-[#FFB347]' : 'text-[#FF4D6D]'}`}>
+                  {wordCount} words {wordCount >= 20 ? '✓' : wordCount >= 10 ? '~' : '✕'}
                 </span>
               </div>
               <div
-                className="min-h-[60px] p-3 rounded-lg bg-black/30 border border-white/5 text-sm leading-relaxed font-mono"
-                style={{ color: liveText ? '#fff' : '#555' }}
+                className="min-h-[80px] p-4 rounded-xl bg-[#F8F7FF] border-2 border-[#1A1035] text-sm font-bold leading-relaxed"
+                style={{ color: liveText ? '#1A1035' : 'rgba(26, 16, 53, 0.4)' }}
               >
                 {liveText || '🎤 Your words will appear here as you speak...'}
               </div>
             </div>
 
             {/* Generate Report button — appears after MIN_SECONDS_FOR_BUTTON */}
-            <div className="mx-auto text-center" style={{ maxWidth: '520px' }}>
+            <div className="mx-auto text-center mt-6" style={{ maxWidth: '520px' }}>
               {canGenerate ? (
                 <button
                   onClick={generateReport}
-                  className="btn-primary py-3 px-8 text-base shadow-lg shadow-brand-cyan/20 w-full"
+                  className="bg-[#1A1035] text-white font-black uppercase tracking-wider py-4 px-8 rounded-xl border-4 border-[#1A1035] shadow-[6px_6px_0px_#6C47FF] hover:shadow-[8px_8px_0px_#6C47FF] hover:-translate-y-1 transition-all w-full text-lg"
                 >
                   📊 Generate Report →
                 </button>
               ) : (
-                <p className="text-xs text-gray-600">
-                  Keep speaking... button appears in {Math.max(0, MIN_SECONDS_FOR_BUTTON - (TIMER_SECONDS - timeLeft))}s
+                <p className="text-[10px] font-black text-[#1A1035]/50 uppercase tracking-widest">
+                  Keep speaking... button appears in <span className="bg-white text-[#1A1035] px-1 rounded border border-[#1A1035]">{Math.max(0, MIN_SECONDS_FOR_BUTTON - (TIMER_SECONDS - timeLeft))}s</span>
                 </p>
               )}
             </div>
@@ -345,34 +345,35 @@ export default function SoftSkillsAnalyzerPage() {
 
         {/* ═══ ANALYZING ═══ */}
         {phase === 'analyzing' && (
-          <div className="glass-card p-12 text-center space-y-4">
-            <div className="w-14 h-14 border-4 border-brand-cyan border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-brand-cyan font-semibold text-lg">Analyzing your response...</p>
-            <p className="text-sm text-gray-500">Checking confidence, clarity, structure & filler words</p>
+          <div className="bg-white border-4 border-[#1A1035] p-12 text-center space-y-6 rounded-2xl shadow-[8px_8px_0px_#1A1035] max-w-md mx-auto">
+            <div className="w-16 h-16 border-8 border-[#00C9A7] border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xl font-black text-[#1A1035] uppercase tracking-tight">Analyzing your response...</p>
+            <p className="text-sm font-bold text-[#1A1035]/60">Checking confidence, clarity, structure & filler words</p>
           </div>
         )}
 
         {/* ═══ ERROR — no speech detected ═══ */}
         {phase === 'error' && (
-          <div className="glass-card p-8 text-center space-y-5">
-            <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto border border-red-500/30">
-              <span className="text-3xl">🎙️</span>
+          <div className="bg-white border-4 border-[#1A1035] p-8 sm:p-12 text-center rounded-2xl shadow-[8px_8px_0px_#FF4D6D] space-y-6 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-[#FF4D6D]"></div>
+            <div className="w-20 h-20 bg-[#FF4D6D] rounded-full flex items-center justify-center mx-auto border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035]">
+              <span className="text-4xl">🎙️</span>
             </div>
-            <h2 className="text-xl font-bold text-white">We couldn&apos;t detect your voice</h2>
-            <p className="text-sm text-gray-400 max-w-md mx-auto leading-relaxed">
+            <h2 className="text-2xl font-black text-[#1A1035] uppercase tracking-tight">We couldn&apos;t detect your voice</h2>
+            <p className="text-sm font-bold text-[#1A1035]/70 max-w-md mx-auto leading-relaxed">
               Please check mic permissions in<br />
-              <span className="text-white font-semibold">Chrome → address bar → 🔒 icon → Allow microphone</span>
+              <span className="text-[#1A1035] font-black bg-[#F8F7FF] px-2 py-1 rounded border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] inline-block mt-2">Chrome → address bar → 🔒 icon → Allow microphone</span>
             </p>
-            <div className="glass-card p-4 mx-auto max-w-sm border border-yellow-500/20 bg-yellow-500/5">
-              <p className="text-xs text-yellow-400 font-semibold mb-2">💡 Tips</p>
-              <ul className="text-xs text-gray-400 space-y-1 text-left">
-                <li>• Make sure your mic is not muted</li>
-                <li>• Use Chrome or Edge for best results</li>
-                <li>• Speak clearly and at normal volume</li>
-                <li>• Check that no other app is using the mic</li>
+            <div className="bg-[#F8F7FF] border-4 border-[#1A1035] p-6 mx-auto max-w-sm rounded-xl text-left shadow-[4px_4px_0px_#FFB347]">
+              <p className="text-xs font-black text-[#1A1035] uppercase tracking-widest mb-4 flex items-center gap-2"><span className="text-lg bg-[#FFB347] rounded-full w-6 h-6 flex items-center justify-center border-2 border-[#1A1035]">💡</span> Tips</p>
+              <ul className="text-xs font-bold text-[#1A1035]/70 space-y-3">
+                <li className="flex items-start gap-2"><span className="text-[#00C9A7] font-black">▶</span> Make sure your mic is not muted</li>
+                <li className="flex items-start gap-2"><span className="text-[#00C9A7] font-black">▶</span> Use Chrome or Edge for best results</li>
+                <li className="flex items-start gap-2"><span className="text-[#00C9A7] font-black">▶</span> Speak clearly and at normal volume</li>
+                <li className="flex items-start gap-2"><span className="text-[#00C9A7] font-black">▶</span> Check that no other app is using the mic</li>
               </ul>
             </div>
-            <button onClick={handleRetry} className="btn-primary py-3 px-8 text-base shadow-lg shadow-brand-cyan/20">
+            <button onClick={handleRetry} className="bg-white text-[#1A1035] font-black uppercase tracking-wider py-4 px-10 rounded-xl border-4 border-[#1A1035] shadow-[6px_6px_0px_#1A1035] hover:shadow-[8px_8px_0px_#1A1035] hover:-translate-y-1 transition-all text-base mt-4 inline-block">
               🔄 Try Again
             </button>
           </div>
@@ -380,16 +381,16 @@ export default function SoftSkillsAnalyzerPage() {
 
         {/* ═══ RESULTS ═══ */}
         {phase === 'results' && results && (
-          <>
-            <div className="flex gap-3">
-              <button onClick={handleRetry} className="btn-secondary flex-1 py-3">🔄 Try Again</button>
-              <button className="btn-primary flex-1 py-3 cursor-default">PRS Updated ✅</button>
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button onClick={handleRetry} className="flex-1 bg-white text-[#1A1035] font-black uppercase tracking-wider py-4 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all">🔄 Try Again</button>
+              <button className="flex-1 bg-[#00C9A7] text-[#1A1035] font-black uppercase tracking-wider py-4 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] cursor-default text-center">PRS Updated ✅</button>
             </div>
-            <div className="glass-card p-6">
-              <h3 className="text-lg font-bold text-white mb-5">📊 Analysis Report</h3>
+            <div className="bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl shadow-[6px_6px_0px_#1A1035]">
+              <h3 className="text-xl font-black text-[#1A1035] uppercase tracking-tight mb-8 border-b-4 border-[#1A1035]/10 pb-4">📊 Analysis Report</h3>
               <SoftSkillsReportView report={results} studentName={studentName} />
             </div>
-          </>
+          </div>
         )}
       </div>
     </DashboardLayout>

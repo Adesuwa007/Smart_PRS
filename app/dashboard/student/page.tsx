@@ -41,7 +41,7 @@ export default function StudentDashboard() {
       if (softSkillsOverride > 0) {
         setScores({ ...STUDENT_SCORES[0], soft_skills: softSkillsOverride });
       } else {
-        setScores(STUDENT_SCORES[0]); // Arjun Sharma mock data
+        setScores(STUDENT_SCORES[0]); // Student mock data
       }
     } else {
       supabase.from('student_scores').select('*').eq('student_id', user.id).single()
@@ -111,7 +111,7 @@ export default function StudentDashboard() {
     return (
       <DashboardLayout role="student" userName={displayName}>
         <div className="flex items-center justify-center h-64">
-          <div className="w-8 h-8 border-4 border-brand-cyan border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-[#1A1035] border-t-[#00C9A7] rounded-full animate-spin shadow-[4px_4px_0px_#1A1035]"></div>
         </div>
       </DashboardLayout>
     );
@@ -123,56 +123,58 @@ export default function StudentDashboard() {
         {/* Welcome + Psychology Microcopy */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-black tracking-tight text-white">Welcome back, {firstName} 👋</h1>
-            <p className="text-slate-500 text-sm mt-1">
+            <h1 className="text-3xl font-black tracking-tight text-[#1A1035]">Welcome back, {firstName} 👋</h1>
+            <p className="text-[#1A1035]/60 font-bold text-sm mt-1">
               {prs.score >= 80
                 ? `You're in the top ${Math.round((rank / allStudents.length) * 100)}% of your batch! 🏆`
                 : `You're ${pointsToProduct.toFixed(0)} points away from Product Tier — keep pushing! 🚀`}
             </p>
           </div>
           <div className="flex gap-2">
-            <button onClick={() => setShareOpen(true)} className="btn-secondary py-2 px-4 text-sm">📤 Share Card</button>
-            <button onClick={() => showUpgrade('AI Resume Analyzer')} className="btn-purple py-2 px-4 text-sm">
-              📄 Resume Analyzer <span className="pro-badge ml-1 text-[8px]">PRO</span>
+            <button onClick={() => setShareOpen(true)} className="btn-secondary py-2 px-4 text-sm font-black border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] hover:shadow-[4px_4px_0px_#1A1035]">📤 Share Card</button>
+            <button onClick={() => showUpgrade('AI Resume Analyzer')} className="btn-purple py-2 px-4 text-sm font-black border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] hover:shadow-[4px_4px_0px_#1A1035]">
+              📄 Resume Analyzer <span className="bg-white text-[#1A1035] border-2 border-[#1A1035] px-1.5 py-0.5 rounded-full ml-1 text-[8px] font-black">PRO</span>
             </button>
           </div>
         </div>
 
         {/* Top Row — 3 Stat Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="stat-card reveal-up md:col-span-2 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          <div className="bold-card gradient-section-hero p-8 md:col-span-2 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="relative">
-              <p className="text-xs text-slate-500 uppercase tracking-wider mb-3">PRS Score</p>
-              <p className="text-8xl font-black tracking-tight text-white leading-none">{animatedScore}</p>
-              <p className="text-slate-500 text-sm mt-3">Placement Readiness Score</p>
-              <span className="badge score-status-badge mt-4 badge-cyan">{prs.probability} Momentum</span>
+              <p className="text-xs text-[#1A1035]/60 font-bold uppercase tracking-wider mb-3">PRS Score</p>
+              <p className="text-8xl font-black tracking-tight text-[#1A1035] leading-none">{animatedScore}</p>
+              <p className="text-[#1A1035]/60 font-bold text-sm mt-3">Placement Readiness Score</p>
+              <span className="inline-flex items-center gap-1 bg-[#EDE9FE] border-2 border-[#6C47FF] rounded-full px-3 py-1 text-[10px] font-bold text-[#6C47FF] mt-4 uppercase">
+                {prs.probability} Momentum
+              </span>
             </div>
             <PRSGauge score={prs.score} size={170} />
           </div>
 
-          <div className="stat-card reveal-up">
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Placement Probability</p>
+          <div className="bold-card bg-white p-6">
+            <p className="text-xs text-[#1A1035]/40 font-bold uppercase tracking-wider mb-2">Placement Probability</p>
             <div className="flex items-center gap-3">
-              <span className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">
+              <span className="text-4xl font-black text-[#6C47FF]">
                 {prs.probabilityRange}
               </span>
             </div>
-            <span className={`badge mt-3 ${prs.probability === 'High' ? 'badge-success' : prs.probability === 'Medium' ? 'badge-warning' : 'badge-error'}`}>
+            <span className={`inline-block mt-4 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border-2 border-[#1A1035] ${prs.probability === 'High' ? 'bg-[#D1FAE5] text-[#00C9A7]' : prs.probability === 'Medium' ? 'bg-[#FEF3C7] text-[#FFB347]' : 'bg-[#FCE7F3] text-[#FF4D6D]'}`}>
               {prs.probability} Probability
             </span>
-            <button onClick={() => showUpgrade('Placement Probability')} className="block mt-2 text-[10px] text-brand-purple hover:underline">
+            <button onClick={() => showUpgrade('Placement Probability')} className="block mt-4 text-[10px] font-bold text-[#6C47FF] hover:underline">
               🔮 Detailed analysis → PRO
             </button>
           </div>
 
-          <div className="stat-card reveal-up">
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Batch Rank</p>
+          <div className="bold-card bg-white p-6">
+            <p className="text-xs text-[#1A1035]/40 font-bold uppercase tracking-wider mb-2">Batch Rank</p>
             <div className="flex items-baseline gap-1">
-              <span className="text-4xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent">{animatedRank}</span>
-              <span className="text-slate-500 text-lg">/ {allStudents.length}</span>
+              <span className="text-4xl font-black text-[#00C9A7]">{animatedRank}</span>
+              <span className="text-[#1A1035]/40 font-bold text-lg">/ {allStudents.length}</span>
             </div>
-            <p className="text-xs text-slate-500 mt-2">students in your batch</p>
-            <p className="text-xs text-brand-cyan mt-1 font-semibold">Top {Math.round((rank / allStudents.length) * 100)}% 🎯</p>
+            <p className="text-xs text-[#1A1035]/60 font-bold mt-2">students in your batch</p>
+            <p className="text-xs text-[#6C47FF] mt-2 font-black uppercase tracking-wider">Top {Math.round((rank / allStudents.length) * 100)}% 🎯</p>
           </div>
         </div>
 
@@ -199,23 +201,23 @@ export default function StudentDashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="glass-card p-5 space-y-4">
-            <h3 className="text-base font-semibold text-white">Profile Portfolio Card</h3>
+          <div className="bold-card bg-white p-6 space-y-4">
+            <h3 className="text-lg font-black text-[#1A1035] uppercase tracking-tight mb-4">Profile Portfolio Card</h3>
             <div>
-              <label className="text-xs text-gray-500">LinkedIn URL</label>
+              <label className="text-xs font-bold text-[#1A1035]/60 uppercase tracking-wider">LinkedIn URL</label>
               <input
                 value={profile.linkedin}
                 onChange={e => setProfile(prev => ({ ...prev, linkedin: e.target.value }))}
-                className="input-dark mt-1 text-sm py-2"
+                className="w-full mt-2 bg-[#F8F7FF] border-2 border-[#1A1035]/20 rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] focus:border-[#6C47FF] focus:ring-0 transition-colors"
                 placeholder="https://linkedin.com/in/your-profile"
               />
             </div>
             <div>
-              <label className="text-xs text-gray-500">GitHub Username</label>
+              <label className="text-xs font-bold text-[#1A1035]/60 uppercase tracking-wider">GitHub Username</label>
               <input
                 value={profile.github}
                 onChange={e => setProfile(prev => ({ ...prev, github: e.target.value.replace('@', '') }))}
-                className="input-dark mt-1 text-sm py-2"
+                className="w-full mt-2 bg-[#F8F7FF] border-2 border-[#1A1035]/20 rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] focus:border-[#6C47FF] focus:ring-0 transition-colors"
                 placeholder="octocat"
               />
               {profile.github && (
@@ -223,14 +225,14 @@ export default function StudentDashboard() {
                   href={`https://github.com/${profile.github}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs text-cyan-400 mt-1 inline-block hover:underline"
+                  className="text-xs font-bold text-[#6C47FF] mt-2 inline-block hover:underline"
                 >
                   github.com/{profile.github}
                 </a>
               )}
             </div>
-            <div className="space-y-2">
-              <label className="text-xs text-gray-500">Top 3 Projects</label>
+            <div className="space-y-3">
+              <label className="text-xs font-bold text-[#1A1035]/60 uppercase tracking-wider">Top 3 Projects</label>
               {[0, 1, 2].map(index => (
                 <input
                   key={index}
@@ -240,16 +242,16 @@ export default function StudentDashboard() {
                     next[index] = e.target.value;
                     setProfile(prev => ({ ...prev, projects: next }));
                   }}
-                  className="input-dark text-sm py-2"
+                  className="w-full bg-[#F8F7FF] border-2 border-[#1A1035]/20 rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] focus:border-[#6C47FF] focus:ring-0 transition-colors"
                   placeholder={`Project ${index + 1} name`}
                 />
               ))}
             </div>
           </div>
 
-          <div className="glass-card p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-semibold text-white">My Improvement Sessions</h3>
+          <div className="bold-card bg-white p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-lg font-black text-[#1A1035] uppercase tracking-tight">My Improvement Sessions</h3>
               <button
                 onClick={() => {
                   setShowNotifPanel(p => !p);
@@ -258,11 +260,11 @@ export default function StudentDashboard() {
                   setNotifications(updated);
                   saveNotifications(updated);
                 }}
-                className="relative p-2 rounded-lg hover:bg-white/5 transition"
+                className="relative p-2 rounded-xl border-2 border-[#1A1035]/10 hover:bg-[#EDE9FE] transition-colors"
               >
-                <span className="text-lg">🔔</span>
+                <span className="text-xl">🔔</span>
                 {notifications.filter(n => !n.read).length > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  <span className="absolute -top-1 -right-1 bg-[#FF4D6D] border-2 border-white text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                     {notifications.filter(n => !n.read).length}
                   </span>
                 )}
@@ -271,29 +273,29 @@ export default function StudentDashboard() {
 
             {/* Notification Panel */}
             {showNotifPanel && (
-              <div className="mb-4 space-y-2">
+              <div className="mb-6 space-y-3">
                 {notifications.length === 0 ? (
-                  <p className="text-xs text-gray-500 text-center py-3">No notifications</p>
+                  <p className="text-xs font-bold text-[#1A1035]/40 text-center py-4">No notifications</p>
                 ) : notifications.map((n, i) => (
-                  <div key={i} className={`p-3 rounded-xl border text-sm flex gap-3 items-start ${
-                    n.read ? 'border-white/5 bg-white/2' : 'border-blue-500/30 bg-blue-500/5'
+                  <div key={i} className={`p-4 rounded-xl border-2 text-sm flex gap-3 items-start ${
+                    n.read ? 'border-[#1A1035]/10 bg-[#F8F7FF]' : 'border-[#6C47FF]/50 bg-[#EDE9FE]'
                   }`}>
-                    <span className="text-base">📅</span>
+                    <span className="text-lg">📅</span>
                     <div className="flex-1">
-                      {n.title && <p className="text-white font-semibold text-xs mb-0.5">{n.title}</p>}
-                      <p className="text-gray-400 text-xs">{n.message}</p>
+                      {n.title && <p className="text-[#1A1035] font-black text-sm mb-1">{n.title}</p>}
+                      <p className="text-[#1A1035]/70 font-medium text-xs">{n.message}</p>
                       {n.meet_link && (
-                        <a href={n.meet_link} target="_blank" rel="noreferrer" className="text-xs text-cyan-400 hover:underline mt-1 inline-block">Join Meeting →</a>
+                        <a href={n.meet_link} target="_blank" rel="noreferrer" className="text-xs font-bold text-[#6C47FF] hover:underline mt-2 inline-block">Join Meeting →</a>
                       )}
                     </div>
-                    {!n.read && <div className="w-2 h-2 rounded-full bg-blue-400 mt-1 shrink-0" />}
+                    {!n.read && <div className="w-2.5 h-2.5 rounded-full bg-[#6C47FF] mt-1 shrink-0" />}
                   </div>
                 ))}
               </div>
             )}
 
             {impSessions.length === 0 ? (
-              <p className="text-sm text-gray-500">No sessions scheduled yet.</p>
+              <p className="text-sm font-bold text-[#1A1035]/40">No sessions scheduled yet.</p>
             ) : (
               <div className="space-y-4">
                 {impSessions
@@ -314,77 +316,77 @@ export default function StudentDashboard() {
                     const materialsExpanded = expandedMaterials.includes(s.id);
 
                     return (
-                      <div key={s.id} className={`rounded-xl border bg-brand-surface/40 flex flex-col gap-0 overflow-hidden
-                        ${ s.status === 'completed' ? 'border-l-4 border-emerald-500/60' : 
-                           s.status === 'cancelled' ? 'border-l-4 border-red-500/60' : 
-                           'border-l-4 border-blue-500/60'}`}>
-                        <div className="p-4 flex flex-col gap-3">
+                      <div key={s.id} className={`rounded-xl border-2 flex flex-col gap-0 overflow-hidden
+                        ${ s.status === 'completed' ? 'border-[#00C9A7] bg-[#D1FAE5]/30' : 
+                           s.status === 'cancelled' ? 'border-[#FF4D6D] bg-[#FCE7F3]/30' : 
+                           'border-[#1A1035] bg-white hover:shadow-[4px_4px_0px_#1A1035] transition-all'}`}>
+                        <div className="p-5 flex flex-col gap-4">
                           {/* Header */}
                           <div className="flex justify-between items-start">
                             <div>
-                              <p className="text-sm font-bold text-white">📅 {s.weak_area} Improvement Session</p>
-                              <p className="text-xs text-gray-400 mt-0.5">with {s.faculty_name}</p>
+                              <p className="text-sm font-black text-[#1A1035]">📅 {s.weak_area} Improvement Session</p>
+                              <p className="text-xs font-bold text-[#1A1035]/50 mt-1">with {s.faculty_name}</p>
                             </div>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full uppercase font-bold shrink-0
-                              ${ s.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
-                                 s.status === 'cancelled' ? 'bg-red-500/20 text-red-400' :
-                                 'bg-blue-500/20 text-blue-400'}`}>
+                            <span className={`text-[10px] px-3 py-1 rounded-full uppercase font-black border-2
+                              ${ s.status === 'completed' ? 'border-[#00C9A7] bg-[#D1FAE5] text-[#00C9A7]' :
+                                 s.status === 'cancelled' ? 'border-[#FF4D6D] bg-[#FCE7F3] text-[#FF4D6D]' :
+                                 'border-[#1A1035] bg-[#EDE9FE] text-[#6C47FF]'}`}>
                               {s.status}
                             </span>
                           </div>
 
                           {/* Date + Countdown */}
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-6">
                             <div>
-                              <p className="text-[10px] text-gray-500 uppercase tracking-wider">📆 Date</p>
-                              <p className="text-xs text-gray-300">{sessionDate.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</p>
+                              <p className="text-[10px] font-bold text-[#1A1035]/40 uppercase tracking-wider mb-1">📆 Date</p>
+                              <p className="text-xs font-bold text-[#1A1035]">{sessionDate.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</p>
                             </div>
                             {countdown && (
                               <div>
-                                <p className="text-[10px] text-gray-500 uppercase tracking-wider">⏰ Time Left</p>
-                                <p className={`text-xs font-bold ${ diffMs < 3600000 && diffMs > 0 ? 'text-yellow-400' : 'text-cyan-400'}`}>{countdown}</p>
+                                <p className="text-[10px] font-bold text-[#1A1035]/40 uppercase tracking-wider mb-1">⏰ Time Left</p>
+                                <p className={`text-xs font-black ${ diffMs < 3600000 && diffMs > 0 ? 'text-[#FFB347]' : 'text-[#6C47FF]'}`}>{countdown}</p>
                               </div>
                             )}
                           </div>
 
                           {/* Score Goal */}
                           <div>
-                            <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">🎯 Focus Area</p>
-                            <p className="text-sm text-white">{s.weak_area} <span className="text-gray-500">({s.current_score} → <span className="text-purple-400 font-bold">{s.target_score}</span>)</span></p>
+                            <p className="text-[10px] font-bold text-[#1A1035]/40 uppercase tracking-wider mb-1">🎯 Focus Area</p>
+                            <p className="text-sm font-bold text-[#1A1035]">{s.weak_area} <span className="text-[#1A1035]/40 font-medium">({s.current_score} → <span className="text-[#00C9A7] font-black">{s.target_score}</span>)</span></p>
                           </div>
 
                           {/* Agenda (scheduled only) */}
                           {s.status === 'scheduled' && s.agenda && (
                             <div>
-                              <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">📋 Agenda</p>
-                              <p className="text-xs text-gray-300">{s.agenda}</p>
+                              <p className="text-[10px] font-bold text-[#1A1035]/40 uppercase tracking-wider mb-1">📋 Agenda</p>
+                              <p className="text-xs font-medium text-[#1A1035]/70">{s.agenda}</p>
                             </div>
                           )}
 
                           {/* Join button */}
                           {s.status === 'scheduled' && s.meet_link && (
                             <a href={s.meet_link} target="_blank" rel="noreferrer"
-                              className="text-center text-xs font-bold py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:opacity-90 transition">
+                              className="text-center text-xs font-black py-3 px-4 rounded-xl border-2 border-[#1A1035] bg-white text-[#1A1035] shadow-[2px_2px_0px_#1A1035] hover:shadow-[4px_4px_0px_#1A1035] hover:-translate-y-0.5 transition-all mt-2">
                               🔗 Join Meeting
                             </a>
                           )}
 
                           {/* Outcome */}
                           {s.status === 'completed' && (
-                            <div className="pt-3 border-t border-white/10 space-y-2">
-                              <p className="text-[10px] text-gray-500 uppercase tracking-wider">── Outcome ──</p>
+                            <div className="pt-4 border-t-2 border-[#00C9A7]/20 space-y-3 mt-2">
+                              <p className="text-[10px] font-bold text-[#1A1035]/40 uppercase tracking-wider">Outcome</p>
                               {s.outcome_notes ? (
                                 <>
                                   <div className="flex items-center gap-2">
-                                    <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded">✅ {s.outcome_rating}</span>
+                                    <span className="text-xs font-black text-[#00C9A7] border-2 border-[#00C9A7] bg-white px-2 py-1 rounded-full">✅ {s.outcome_rating}</span>
                                     {s.score_after_session && s.score_after_session > s.current_score && (
-                                      <span className="text-xs font-bold text-emerald-400">📈 {s.current_score} → {s.score_after_session} (+{s.score_after_session - s.current_score} pts) 🎉</span>
+                                      <span className="text-xs font-black text-[#00C9A7]">📈 {s.current_score} → {s.score_after_session} (+{s.score_after_session - s.current_score} pts) 🎉</span>
                                     )}
                                   </div>
-                                  <p className="text-xs text-gray-300 italic">&quot;{s.outcome_notes}&quot;</p>
+                                  <p className="text-xs font-medium text-[#1A1035]/70 italic border-l-2 border-[#00C9A7] pl-3 py-1">&quot;{s.outcome_notes}&quot;</p>
                                 </>
                               ) : (
-                                <p className="text-xs text-gray-500">⏳ Awaiting faculty outcome...</p>
+                                <p className="text-xs font-bold text-[#1A1035]/40">⏳ Awaiting faculty outcome...</p>
                               )}
                             </div>
                           )}
@@ -392,19 +394,19 @@ export default function StudentDashboard() {
 
                         {/* Collapsible Study Materials */}
                         {hasMaterials && (
-                          <div className="border-t border-white/10">
+                          <div className={`border-t-2 ${s.status === 'completed' ? 'border-[#00C9A7]/20' : 'border-[#1A1035]/10'}`}>
                             <button
                               onClick={() => setExpandedMaterials(prev =>
                                 prev.includes(s.id) ? prev.filter(id => id !== s.id) : [...prev, s.id]
                               )}
-                              className="w-full flex items-center justify-between px-4 py-2.5 hover:bg-white/5 transition text-left"
+                              className="w-full flex items-center justify-between px-5 py-3 hover:bg-black/5 transition-colors text-left"
                             >
-                              <span className="text-xs font-semibold text-yellow-400">📚 Study Materials</span>
-                              <span className="text-gray-500 text-xs">{materialsExpanded ? '▲' : '▼'}</span>
+                              <span className="text-xs font-black text-[#1A1035] uppercase tracking-wider">📚 Study Materials</span>
+                              <span className="text-[#1A1035]/40 text-xs font-bold">{materialsExpanded ? '▲' : '▼'}</span>
                             </button>
                             {materialsExpanded && (
-                              <div className="px-4 pb-4">
-                                <pre className="text-xs text-gray-300 whitespace-pre-wrap font-sans leading-relaxed">
+                              <div className="px-5 pb-5 pt-2">
+                                <pre className="text-xs text-[#1A1035]/70 whitespace-pre-wrap font-sans font-medium leading-relaxed bg-white border-2 border-[#1A1035]/10 rounded-xl p-4">
                                   {(s as ImprovementSession & { materials?: string }).materials}
                                 </pre>
                               </div>
@@ -420,15 +422,17 @@ export default function StudentDashboard() {
         </div>
 
         {/* Motivational Footer */}
-        <div className="glass-card reveal-up p-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">💡</span>
+        <div className="bold-card bg-[#EDE9FE] p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-white rounded-full border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] flex items-center justify-center text-2xl">💡</div>
             <div>
-              <p className="text-sm text-white font-medium">Increase your PRS by +15 in 2 weeks</p>
-              <p className="text-xs text-gray-500">Follow your personalized study plan from SmartCoach AI</p>
+              <p className="text-sm text-[#1A1035] font-black uppercase tracking-tight">Increase your PRS by +15 in 2 weeks</p>
+              <p className="text-xs font-bold text-[#1A1035]/60 mt-1">Follow your personalized study plan from SmartCoach AI</p>
             </div>
           </div>
-          <button onClick={() => {}} className="btn-secondary py-2 px-4 text-xs">Open SmartCoach →</button>
+          <button onClick={() => {}} className="bg-white border-2 border-[#1A1035] text-[#1A1035] font-black text-xs py-2.5 px-6 rounded-xl shadow-[3px_3px_0px_#1A1035] hover:shadow-[5px_5px_0px_#1A1035] hover:-translate-y-0.5 transition-all">
+            Open SmartCoach →
+          </button>
         </div>
       </div>
 

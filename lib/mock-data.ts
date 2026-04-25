@@ -22,16 +22,16 @@ export const DEMO_COLLEGE: College = {
 // Demo Users
 // ---------------------------------------------------------------------------
 export const DEMO_USERS: Profile[] = [
-  { id: 'user-student-001', name: 'Arjun Sharma', email: 'student@demo.com', role: 'student', college_id: 'college-001', plan: 'free', department: 'CS', created_at: '2025-06-15' },
-  { id: 'user-faculty-001', name: 'Dr. Ramesh Kumar', email: 'faculty@demo.com', role: 'faculty', college_id: 'college-001', plan: 'free', created_at: '2025-01-10' },
-  { id: 'user-admin-001', name: 'Prof. Anitha Desai', email: 'admin@demo.com', role: 'admin', college_id: 'college-001', plan: 'free', created_at: '2024-08-01' },
+  { id: 'user-student-001', name: 'Student', email: 'student@demo.com', role: 'student', college_id: 'college-001', plan: 'free', department: 'CS', created_at: '2025-06-15' },
+  { id: 'user-faculty-001', name: 'Faculty', email: 'faculty@demo.com', role: 'faculty', college_id: 'college-001', plan: 'free', created_at: '2025-01-10' },
+  { id: 'user-admin-001', name: 'Admin', email: 'admin@demo.com', role: 'admin', college_id: 'college-001', plan: 'free', created_at: '2024-08-01' },
 ];
 
 // ---------------------------------------------------------------------------
 // 15 Student Profiles
 // ---------------------------------------------------------------------------
 export const STUDENT_PROFILES: Profile[] = [
-  { id: 'student-001', name: 'Arjun Sharma', email: 'arjun@vvce.edu', role: 'student', college_id: 'college-001', plan: 'free', department: 'CS', created_at: '2025-06-15' },
+  { id: 'student-001', name: 'Student', email: 'student@vvce.edu', role: 'student', college_id: 'college-001', plan: 'free', department: 'CS', created_at: '2025-06-15' },
   { id: 'student-002', name: 'Priya Nair', email: 'priya@vvce.edu', role: 'student', college_id: 'college-001', plan: 'free', department: 'CS', created_at: '2025-06-15' },
   { id: 'student-003', name: 'Rohit Desai', email: 'rohit@vvce.edu', role: 'student', college_id: 'college-001', plan: 'free', department: 'IS', created_at: '2025-06-15' },
   { id: 'student-004', name: 'Sneha Kulkarni', email: 'sneha@vvce.edu', role: 'student', college_id: 'college-001', plan: 'free', department: 'CS', created_at: '2025-06-15' },
@@ -73,7 +73,7 @@ export const STUDENT_SCORES: StudentScores[] = [
 // Mock Assessments (history for progress charts)
 // ---------------------------------------------------------------------------
 export const MOCK_ASSESSMENTS: Assessment[] = [
-  // Arjun's assessment history
+  // Student's assessment history
   { id: 'assess-001', student_id: 'student-001', type: 'coding', score: 72, taken_at: '2025-11-15', notes: 'Mid-semester coding test' },
   { id: 'assess-002', student_id: 'student-001', type: 'aptitude', score: 68, taken_at: '2025-12-01', notes: 'Aptitude practice test' },
   { id: 'assess-003', student_id: 'student-001', type: 'coding', score: 78, taken_at: '2026-01-10', notes: 'DSA assessment' },
@@ -131,7 +131,7 @@ export function getAllStudentsWithScores(): StudentWithScores[] {
   const demoRole = localStorage.getItem('demoRole');
   const user = currentAuthUser || {
     id: 'demo-student',
-    name: localStorage.getItem('demoName') || 'Arjun Sharma',
+    name: localStorage.getItem('demoName') || 'Student',
     email: localStorage.getItem('demoEmail') || 'student@demo.com',
     role: demoRole || '',
   };

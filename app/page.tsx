@@ -66,50 +66,47 @@ export default function LandingPage() {
   const isVisible = (id: string) => visible.has(id);
 
   return (
-    <div className="min-h-screen bg-brand-dark text-gray-200">
+    <div className="min-h-screen bg-[#F8F7FF] text-[#1A1035] font-sans selection:bg-[#00C9A7] selection:text-[#1A1035]">
       {/* Nav */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-brand-dark/90 backdrop-blur-lg border-b border-brand-border' : ''}`}>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrollY > 50 ? 'bg-white/90 backdrop-blur-lg border-b-4 border-[#1A1035] shadow-[0px_4px_0px_#1A1035]' : 'bg-transparent border-b-4 border-transparent'}`}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-cyan to-brand-purple flex items-center justify-center text-white font-bold text-sm">S</div>
-            <span className="text-xl font-bold text-white">Smart<span className="text-brand-cyan">PRS</span></span>
-          </div>
-          <div className="hidden md:flex items-center gap-8 text-sm">
-            <a href="#features" className="text-gray-400 hover:text-white transition">Features</a>
-            <a href="#pricing" className="text-gray-400 hover:text-white transition">Pricing</a>
-            <Link href="/login" className="text-gray-400 hover:text-white transition">Login</Link>
-            <Link href="/signup" className="btn-primary text-sm py-2 px-5">Get Started Free</Link>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-white border-4 border-[#1A1035] flex items-center justify-center text-[#1A1035] font-black text-lg shadow-[2px_2px_0px_#6C47FF] group-hover:shadow-[4px_4px_0px_#6C47FF] group-hover:-translate-y-0.5 transition-all">S</div>
+            <span className="text-2xl font-black text-[#1A1035] uppercase tracking-tighter">Smart<span className="text-[#6C47FF]">PRS</span></span>
+          </Link>
+          <div className="hidden md:flex items-center gap-8 text-sm font-black uppercase tracking-wider">
+            <a href="#features" className="text-[#1A1035]/60 hover:text-[#6C47FF] transition-colors">Features</a>
+            <a href="#pricing" className="text-[#1A1035]/60 hover:text-[#6C47FF] transition-colors">Pricing</a>
+            <Link href="/login" className="text-[#1A1035]/60 hover:text-[#6C47FF] transition-colors">Login</Link>
+            <Link href="/signup" className="bg-[#00C9A7] text-[#1A1035] px-6 py-2.5 rounded-xl border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] hover:shadow-[4px_4px_0px_#1A1035] hover:-translate-y-0.5 transition-all">Get Started</Link>
           </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="gradient-mesh min-h-screen flex items-center relative overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="particle" style={{ left: `${15 + i * 15}%`, top: `${20 + (i % 3) * 25}%`, animationDelay: `${i * 0.8}s`, width: `${3 + i % 3}px`, height: `${3 + i % 3}px` }} />
-          ))}
-        </div>
-        <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10">
-          <div className="max-w-3xl">
-
-
-            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-white leading-tight mb-6">
+      <section className="min-h-screen flex items-center relative overflow-hidden bg-[#F8F7FF]">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#1A1035 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+        
+        <div className="max-w-7xl mx-auto px-6 pt-32 pb-20 relative z-10 w-full">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#1A1035] leading-[1.1] mb-8 uppercase tracking-tighter">
               Turn Every Student Into a{' '}
-              <span className="bg-gradient-to-r from-brand-cyan to-brand-purple bg-clip-text text-transparent">Placement Success Story</span>
+              <span className="inline-block bg-[#00C9A7] px-4 py-1 border-4 border-[#1A1035] shadow-[6px_6px_0px_#1A1035] -rotate-1 mt-2 lg:mt-4 text-[#1A1035]">Placement Success</span>
             </h1>
-            <p className="text-lg text-gray-400 mb-8 max-w-2xl leading-relaxed">
-              AI-powered placement readiness tracking for modern engineering colleges. Real-time dashboards, predictive analytics, and personalized training — all in one platform.
+            <p className="text-xl font-bold text-[#1A1035]/60 mb-10 max-w-2xl mx-auto leading-relaxed">
+              The ultimate neo-brutalist dashboard for placement readiness. Real-time tracking, predictive analytics, and personalized AI training.
             </p>
-            <div className="flex flex-wrap gap-4 mb-12">
-              <Link href="/signup" className="btn-primary text-base py-3 px-8">Start Free — No Credit Card</Link>
-              <Link href="/login" className="btn-secondary text-base py-3 px-8">See Live Demo →</Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
+              <Link href="/signup" className="w-full sm:w-auto bg-[#6C47FF] text-white text-lg font-black uppercase tracking-wider py-4 px-10 rounded-xl border-4 border-[#1A1035] shadow-[6px_6px_0px_#1A1035] hover:shadow-[8px_8px_0px_#1A1035] hover:-translate-y-1 transition-all">Start Free</Link>
+              <Link href="/login" className="w-full sm:w-auto bg-white text-[#1A1035] text-lg font-black uppercase tracking-wider py-4 px-10 rounded-xl border-4 border-[#1A1035] shadow-[6px_6px_0px_#1A1035] hover:shadow-[8px_8px_0px_#1A1035] hover:-translate-y-1 transition-all">See Live Demo →</Link>
             </div>
-            <div className="flex flex-wrap gap-6">
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
               {stats.map((s, i) => (
-                <div key={i} className="text-center">
-                  <div className="text-2xl font-bold text-white">{s.value}</div>
-                  <div className="text-xs text-gray-500">{s.label}</div>
+                <div key={i} className="bg-white border-4 border-[#1A1035] p-6 shadow-[4px_4px_0px_#1A1035] rounded-xl transform hover:-translate-y-1 transition-transform">
+                  <div className={`text-3xl lg:text-4xl font-black mb-2 ${i === 0 ? 'text-[#FF4D6D]' : i === 1 ? 'text-[#00C9A7]' : i === 2 ? 'text-[#6C47FF]' : 'text-[#FFB347]'}`}>{s.value}</div>
+                  <div className="text-xs font-bold text-[#1A1035] uppercase tracking-wider">{s.label}</div>
                 </div>
               ))}
             </div>
@@ -118,18 +115,18 @@ export default function LandingPage() {
       </section>
 
       {/* Problem */}
-      <section className="py-24 px-6">
+      <section className="py-24 px-6 bg-[#1A1035]">
         <div className="max-w-7xl mx-auto">
-          <div id="problems" data-animate className={`text-center mb-16 transition-all duration-700 ${isVisible('problems') ? 'opacity-100 translate-y-0' : 'opacity-100 translate-y-0'}`}>
-            <h2 className="text-3xl font-bold text-white mb-4">The Problem is Real</h2>
-            <p className="text-gray-400 max-w-xl mx-auto">56.35% of Indian engineering graduates are unemployable. Here&apos;s why traditional methods fail.</p>
+          <div id="problems" data-animate className={`text-center mb-16 transition-all duration-700 ${isVisible('problems') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 uppercase tracking-tight">The Problem is <span className="text-[#FF4D6D]">Real</span></h2>
+            <p className="text-xl font-bold text-white/60 max-w-2xl mx-auto">56.35% of Indian engineering graduates are unemployable. Here&apos;s why traditional methods fail.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {painPoints.map((p, i) => (
-              <div key={i} id={`pain-${i}`} data-animate className="glass-card p-8 transition-all duration-700">
-                <div className="text-4xl mb-4">{p.icon}</div>
-                <h3 className="text-lg font-semibold text-white mb-2">{p.title}</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">{p.desc}</p>
+              <div key={i} id={`pain-${i}`} data-animate className={`bg-white border-4 border-white p-8 rounded-2xl shadow-[8px_8px_0px_rgba(255,255,255,0.2)] transition-all duration-700 delay-${i * 100} ${isVisible(`pain-${i}`) ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+                <div className="w-16 h-16 bg-[#F8F7FF] border-4 border-[#1A1035] rounded-xl flex items-center justify-center text-3xl shadow-[4px_4px_0px_#1A1035] mb-6">{p.icon}</div>
+                <h3 className="text-xl font-black text-[#1A1035] mb-4 uppercase tracking-tight">{p.title}</h3>
+                <p className="text-base font-bold text-[#1A1035]/60 leading-relaxed">{p.desc}</p>
               </div>
             ))}
           </div>
@@ -137,18 +134,18 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24 px-6 bg-brand-surface/30">
+      <section id="features" className="py-24 px-6 bg-white border-y-4 border-[#1A1035]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4">Intelligent Features That Drive Results</h2>
-            <p className="text-gray-400 max-w-xl mx-auto">Everything your placement cell needs to transform student outcomes.</p>
+            <h2 className="text-4xl md:text-5xl font-black text-[#1A1035] mb-6 uppercase tracking-tight">Intelligent <span className="inline-block bg-[#00C9A7] px-2 border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] rotate-1">Features</span></h2>
+            <p className="text-xl font-bold text-[#1A1035]/60 max-w-2xl mx-auto">Everything your placement cell needs to transform student outcomes.</p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((f, i) => (
-              <div key={i} className="glass-card p-6">
-                <div className="text-3xl mb-3">{f.icon}</div>
-                <h3 className="text-base font-semibold text-white mb-2">{f.title}</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">{f.desc}</p>
+              <div key={i} className="bg-[#F8F7FF] border-4 border-[#1A1035] p-6 shadow-[6px_6px_0px_#1A1035] rounded-xl hover:-translate-y-2 transition-transform">
+                <div className="w-14 h-14 bg-white border-4 border-[#1A1035] rounded-xl flex items-center justify-center text-2xl shadow-[2px_2px_0px_#1A1035] mb-6">{f.icon}</div>
+                <h3 className="text-lg font-black text-[#1A1035] mb-3 uppercase tracking-tight leading-tight">{f.title}</h3>
+                <p className="text-sm font-bold text-[#1A1035]/60 leading-relaxed">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -156,17 +153,23 @@ export default function LandingPage() {
       </section>
 
       {/* Social Proof */}
-      <section className="py-24 px-6">
-        <div className="max-w-7xl mx-auto">
+      <section className="py-24 px-6 bg-[#F8F7FF] relative overflow-hidden">
+        {/* Pattern */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#1A1035 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           <div id="social" data-animate className={`text-center mb-16 transition-all duration-700 ${isVisible('social') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <p className="text-brand-cyan text-sm font-semibold mb-2">TRUSTED BY EDUCATORS</p>
-            <h2 className="text-3xl font-bold text-white mb-4">Loved by 12+ Colleges Across India</h2>
+            <p className="bg-[#1A1035] text-white px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest inline-block mb-6 border-2 border-[#1A1035] shadow-[2px_2px_0px_#6C47FF]">TRUSTED BY EDUCATORS</p>
+            <h2 className="text-4xl md:text-5xl font-black text-[#1A1035] mb-4 uppercase tracking-tight">Loved by 12+ Colleges</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((t, i) => (
-              <div key={i} className="glass-card p-6">
-                <p className="text-sm text-gray-300 mb-4 italic">&quot;{t.quote}&quot;</p>
-                <div><p className="text-white font-semibold text-sm">{t.name}</p><p className="text-xs text-gray-500">{t.role}</p></div>
+              <div key={i} className={`bg-white border-4 border-[#1A1035] p-8 shadow-[8px_8px_0px_#1A1035] rounded-2xl relative ${i === 1 ? 'md:-translate-y-4' : ''}`}>
+                <div className="absolute -top-5 -left-5 text-6xl text-[#00C9A7]">❝</div>
+                <p className="text-base font-bold text-[#1A1035]/80 mb-6 italic relative z-10">&quot;{t.quote}&quot;</p>
+                <div className="border-t-4 border-[#1A1035]/10 pt-4">
+                  <p className="text-[#1A1035] font-black text-lg uppercase tracking-tight">{t.name}</p>
+                  <p className="text-sm font-bold text-[#6C47FF]">{t.role}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -174,23 +177,26 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-24 px-6 bg-brand-surface/30">
+      <section id="pricing" className="py-24 px-6 bg-white border-y-4 border-[#1A1035]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white mb-4">Simple, Transparent Pricing</h2>
-            <p className="text-gray-400">Start free. Upgrade when you&apos;re ready to unlock AI.</p>
+            <h2 className="text-4xl md:text-5xl font-black text-[#1A1035] mb-6 uppercase tracking-tight">Simple Pricing</h2>
+            <p className="text-xl font-bold text-[#1A1035]/60">Start free. Upgrade when you&apos;re ready to unlock AI.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {plans.map((plan, i) => (
-              <div key={i} className={`glass-card p-8 relative ${plan.popular ? 'border-brand-cyan/50 ring-1 ring-brand-cyan/20' : ''}`}>
-                {plan.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 pro-badge px-3 py-1">MOST POPULAR</div>}
-                <h3 className="text-lg font-bold text-white mb-1">{plan.name}</h3>
-                <div className="mb-6"><span className="text-3xl font-extrabold text-white">{plan.price}</span><span className="text-gray-500 text-sm">{plan.period}</span></div>
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((f, fi) => <li key={fi} className="flex items-start gap-2 text-sm text-gray-300"><span className="text-brand-cyan mt-0.5">✓</span>{f}</li>)}
-                  {plan.blocked.map((f, fi) => <li key={fi} className="flex items-start gap-2 text-sm text-gray-600 line-through"><span className="mt-0.5">✗</span>{f}</li>)}
+              <div key={i} className={`bg-[#F8F7FF] border-4 border-[#1A1035] p-8 rounded-2xl relative transition-transform ${plan.popular ? 'shadow-[12px_12px_0px_#6C47FF] md:-translate-y-4' : 'shadow-[8px_8px_0px_#1A1035]'}`}>
+                {plan.popular && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FFB347] text-[#1A1035] font-black text-xs px-4 py-1.5 uppercase tracking-widest border-4 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] rounded-full rotate-2">MOST POPULAR</div>}
+                <h3 className="text-2xl font-black text-[#1A1035] mb-2 uppercase tracking-tight">{plan.name}</h3>
+                <div className="mb-8 pb-8 border-b-4 border-[#1A1035]/10">
+                  <span className="text-5xl font-black text-[#1A1035]">{plan.price}</span>
+                  <span className="text-[#1A1035]/50 font-bold ml-1">{plan.period}</span>
+                </div>
+                <ul className="space-y-4 mb-10">
+                  {plan.features.map((f, fi) => <li key={fi} className="flex items-start gap-3 font-bold text-[#1A1035]"><span className="text-[#00C9A7] font-black text-lg leading-none">✓</span>{f}</li>)}
+                  {plan.blocked.map((f, fi) => <li key={fi} className="flex items-start gap-3 font-bold text-[#1A1035]/40 line-through"><span className="text-[#FF4D6D] font-black text-lg leading-none">✗</span>{f}</li>)}
                 </ul>
-                <Link href={plan.name === 'Enterprise' ? '#' : '/signup'} className={`w-full text-center block ${plan.popular ? 'btn-primary' : 'btn-secondary'} py-3`}>{plan.cta}</Link>
+                <Link href={plan.name === 'Enterprise' ? '#' : '/signup'} className={`block w-full text-center font-black uppercase tracking-wider py-4 rounded-xl border-4 border-[#1A1035] transition-all ${plan.popular ? 'bg-[#6C47FF] text-white shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1' : 'bg-white text-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1'}`}>{plan.cta}</Link>
               </div>
             ))}
           </div>
@@ -198,22 +204,26 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Transform Your Placement Cell?</h2>
-          <p className="text-gray-400 mb-8">Join 12+ colleges already using SmartPRS to drive better placement outcomes.</p>
-          <Link href="/signup" className="btn-primary text-base py-3 px-10">Get Started Free →</Link>
+      <section className="py-32 px-6 bg-[#00C9A7] relative overflow-hidden">
+        {/* Background Text */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none overflow-hidden">
+          <span className="text-[20vw] font-black text-[#1A1035] whitespace-nowrap">SMARTPRS</span>
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h2 className="text-5xl md:text-6xl font-black text-[#1A1035] mb-8 uppercase tracking-tighter leading-tight">Ready to Transform Your Placement Cell?</h2>
+          <p className="text-2xl font-bold text-[#1A1035]/80 mb-12">Join 12+ colleges already using SmartPRS.</p>
+          <Link href="/signup" className="inline-block bg-[#1A1035] text-white text-xl font-black uppercase tracking-wider py-5 px-12 rounded-xl border-4 border-[#1A1035] shadow-[8px_8px_0px_rgba(255,255,255,0.5)] hover:shadow-[12px_12px_0px_rgba(255,255,255,0.5)] hover:-translate-y-2 transition-all">Get Started Free 🚀</Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-brand-border py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-br from-brand-cyan to-brand-purple flex items-center justify-center text-white font-bold text-xs">S</div>
-            <span className="font-bold text-white text-sm">SmartPRS</span>
+      <footer className="bg-[#1A1035] py-12 px-6 border-t-8 border-[#6C47FF]">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#1A1035] flex items-center justify-center text-[#1A1035] font-black text-lg shadow-[2px_2px_0px_#00C9A7]">S</div>
+            <span className="text-2xl font-black text-white uppercase tracking-tighter">Smart<span className="text-[#00C9A7]">PRS</span></span>
           </div>
-          <p className="text-xs text-gray-600">© 2026 SmartPRS. All rights reserved.</p>
+          <p className="text-sm font-bold text-white/50 uppercase tracking-wider">© 2026 SmartPRS. All rights reserved.</p>
         </div>
       </footer>
     </div>

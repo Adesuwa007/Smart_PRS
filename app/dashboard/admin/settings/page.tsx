@@ -32,59 +32,60 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <DashboardLayout role="admin" userName="Admin">
+    <DashboardLayout role="admin" userName="User">
       <Toaster position="top-center" />
       <div className="space-y-6 animate-fade-in max-w-3xl">
         <div>
-          <h1 className="text-2xl font-bold text-white">Settings ⚙️</h1>
-          <p className="text-sm text-gray-400">Manage your college plan and billing</p>
+          <h1 className="text-3xl font-black text-[#1A1035] uppercase tracking-tight">Settings ⚙️</h1>
+          <p className="text-sm font-bold text-[#1A1035]/60 mt-1">Manage your college plan and billing</p>
         </div>
 
         {/* College Info */}
-        <div className="glass-card p-6">
-          <h3 className="text-sm font-semibold text-white mb-4">College Information</h3>
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl shadow-[6px_6px_0px_#1A1035]">
+          <h3 className="text-sm font-black text-[#1A1035] mb-6 uppercase tracking-wider border-b-4 border-[#1A1035]/10 pb-4">College Information</h3>
+          <div className="grid md:grid-cols-2 gap-6">
             {[
               { label: 'College Name', value: 'Vidyavardhaka College of Engineering, Mysuru' },
-              { label: 'Admin Email', value: 'admin@demo.com' },
+              { label: 'Admin Email', value: 'user@demo.com' },
               { label: 'Student Count', value: '180 students' },
               { label: 'Plan', value: plan === 'pro' ? 'Pro ⭐' : 'Free' },
             ].map((f, i) => (
-              <div key={i}>
-                <label className="text-xs text-gray-500 uppercase tracking-wider">{f.label}</label>
-                <p className={`text-sm font-medium mt-1 ${f.label === 'Plan' ? (plan === 'pro' ? 'text-brand-cyan' : 'text-white') : 'text-white'}`}>{f.value}</p>
+              <div key={i} className="bg-[#F8F7FF] border-2 border-[#1A1035] p-4 rounded-xl shadow-[4px_4px_0px_#1A1035]">
+                <label className="text-xs font-black text-[#1A1035]/50 uppercase tracking-widest">{f.label}</label>
+                <p className={`text-base font-black mt-1 ${f.label === 'Plan' ? (plan === 'pro' ? 'text-[#00C9A7]' : 'text-[#6C47FF]') : 'text-[#1A1035]'}`}>{f.value}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* Current Plan */}
-        <div className={`glass-card p-6 ${plan === 'free' ? 'border-gray-700' : 'border-brand-purple/40'}`}>
-          <div className="flex items-start justify-between mb-4">
+        <div className={`bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl ${plan === 'free' ? 'shadow-[6px_6px_0px_#1A1035]' : 'shadow-[8px_8px_0px_#6C47FF]'}`}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Current Plan</p>
-              <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold text-white">{plan === 'free' ? 'Free' : 'Pro'}</h3>
-                {plan === 'pro' && <span className="pro-badge text-[10px]">ACTIVE</span>}
+              <p className="text-xs font-black text-[#1A1035]/50 uppercase tracking-widest mb-1">Current Plan</p>
+              <div className="flex items-center gap-3">
+                <h3 className="text-2xl font-black text-[#1A1035] uppercase tracking-tight">{plan === 'free' ? 'Free' : 'Pro'}</h3>
+                {plan === 'pro' && <span className="bg-[#6C47FF] text-white px-3 py-1 text-[10px] font-black uppercase tracking-widest border-2 border-[#1A1035] rounded-full shadow-[2px_2px_0px_#1A1035]">ACTIVE</span>}
               </div>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm font-bold text-[#1A1035]/60 mt-1">
                 {plan === 'free' ? '₹0/month · Up to 50 students' : '₹8,499/month · Unlimited students'}
               </p>
             </div>
             {plan === 'free' && (
               <div>
-                <button onClick={handleUpgrade} disabled={loading} className="btn-purple py-2.5 px-6 disabled:opacity-50">
+                <button onClick={handleUpgrade} disabled={loading} className="bg-[#6C47FF] text-white font-black uppercase tracking-wider py-3 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all disabled:opacity-50">
                   {loading ? '⏳ Redirecting...' : '⚡ Upgrade to Pro'}
                 </button>
               </div>
             )}
           </div>
           {plan === 'free' && (
-            <div className="p-4 bg-brand-purple/5 border border-brand-purple/20 rounded-xl">
-              <p className="text-xs text-brand-purple font-semibold mb-2">🔒 Locked on Free Plan:</p>
-              <div className="grid grid-cols-2 gap-1">
+            <div className="p-5 bg-[#F8F7FF] border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] rounded-xl relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-2 h-full bg-[#FFB347] border-r-4 border-[#1A1035]"></div>
+              <p className="text-xs font-black text-[#1A1035] uppercase tracking-wider mb-4 pl-4">🔒 Locked on Free Plan</p>
+              <div className="grid sm:grid-cols-2 gap-3 pl-4">
                 {['AI Predictions', 'CSV Export', 'Batch Analytics', 'Company Filtering', 'AI Resume Analyzer', 'Unlimited Students'].map((f, i) => (
-                  <p key={i} className="text-xs text-gray-500 flex items-center gap-1"><span>✗</span>{f}</p>
+                  <p key={i} className="text-xs font-bold text-[#1A1035]/60 flex items-center gap-2"><span className="text-[#FF4D6D] font-black">✗</span>{f}</p>
                 ))}
               </div>
             </div>
@@ -93,28 +94,29 @@ export default function AdminSettingsPage() {
 
         {/* Stripe Billing */}
         {plan === 'pro' && (
-          <div className="glass-card p-6">
-            <h3 className="text-sm font-semibold text-white mb-4">Billing</h3>
-            <div className="flex items-center justify-between p-3 rounded-xl bg-brand-surface/50 border border-brand-border">
+          <div className="bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl shadow-[6px_6px_0px_#1A1035]">
+            <h3 className="text-sm font-black text-[#1A1035] uppercase tracking-wider mb-6 border-b-4 border-[#1A1035]/10 pb-4">Billing</h3>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl bg-[#F8F7FF] border-2 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] gap-4">
               <div>
-                <p className="text-sm text-white">Pro Plan · Monthly</p>
-                <p className="text-xs text-gray-500">Next billing: May 24, 2026</p>
+                <p className="text-sm font-black text-[#1A1035]">Pro Plan · Monthly</p>
+                <p className="text-xs font-bold text-[#1A1035]/60 mt-1">Next billing: May 24, 2026</p>
               </div>
-              <span className="badge badge-success text-xs">Active</span>
+              <span className="bg-[#00C9A7] text-[#1A1035] px-3 py-1 text-[10px] font-black uppercase tracking-widest border-2 border-[#1A1035] rounded-full shadow-[2px_2px_0px_#1A1035]">Active</span>
             </div>
-            <button className="btn-secondary py-2 px-4 text-xs mt-4">Manage in Stripe →</button>
+            <button className="bg-white text-[#1A1035] font-black uppercase tracking-wider py-3 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all mt-6 text-xs">Manage in Stripe →</button>
           </div>
         )}
 
         {/* Danger Zone */}
-        <div className="glass-card p-6" style={{ borderColor: 'rgba(239,68,68,0.2)' }}>
-          <h3 className="text-sm font-semibold text-red-400 mb-4">Danger Zone</h3>
-          <div className="flex items-center justify-between">
+        <div className="bg-white border-4 border-[#1A1035] p-6 sm:p-8 rounded-2xl shadow-[6px_6px_0px_#1A1035] relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-2 h-full bg-[#FF4D6D] border-r-4 border-[#1A1035]"></div>
+          <h3 className="text-sm font-black text-[#FF4D6D] uppercase tracking-wider mb-6 border-b-4 border-[#1A1035]/10 pb-4 pl-4">Danger Zone</h3>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pl-4">
             <div>
-              <p className="text-sm text-white">Reset all student data</p>
-              <p className="text-xs text-gray-500">This will permanently delete all scores. Cannot be undone.</p>
+              <p className="text-base font-black text-[#1A1035] uppercase tracking-tight">Reset all student data</p>
+              <p className="text-xs font-bold text-[#1A1035]/60 mt-1">This will permanently delete all scores. Cannot be undone.</p>
             </div>
-            <button className="border border-red-500/40 text-red-400 hover:bg-red-500/10 transition py-2 px-4 rounded-xl text-xs font-semibold">
+            <button className="bg-[#FF4D6D] text-white font-black uppercase tracking-wider py-3 px-6 rounded-xl border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all text-xs">
               Reset Data
             </button>
           </div>

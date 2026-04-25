@@ -37,33 +37,33 @@ export default function SmartCoachChat({ scores }: Props) {
   return (
     <>
       {/* FAB */}
-      <button onClick={() => setOpen(!open)} className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-cyan to-brand-purple shadow-lg shadow-brand-cyan/20 flex items-center justify-center text-white text-xl hover:scale-105 transition-transform">
+      <button onClick={() => setOpen(!open)} className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-2xl bg-[#00C9A7] border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] flex items-center justify-center text-[#1A1035] text-xl hover:shadow-[6px_6px_0px_#1A1035] hover:-translate-y-1 transition-all">
         {open ? '✕' : '🤖'}
       </button>
 
       {/* Chat Panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] glass-card flex flex-col overflow-hidden animate-slide-up" style={{ borderRadius: '20px' }}>
+        <div className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] bg-white border-4 border-[#1A1035] shadow-[8px_8px_0px_#1A1035] flex flex-col overflow-hidden animate-slide-up" style={{ borderRadius: '20px' }}>
           {/* Header */}
-          <div className="p-4 border-b border-brand-border bg-gradient-to-r from-brand-cyan/10 to-brand-purple/10">
+          <div className="p-4 border-b-4 border-[#1A1035] bg-[#F8F7FF]">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-cyan to-brand-purple flex items-center justify-center text-sm">🤖</div>
+              <div className="w-10 h-10 rounded-xl bg-[#00C9A7] border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] flex items-center justify-center text-xl">🤖</div>
               <div>
-                <p className="text-sm font-semibold text-white">SmartCoach AI</p>
-                <p className="text-[10px] text-brand-cyan flex items-center gap-1"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full inline-block"></span> Online</p>
+                <p className="text-sm font-black text-[#1A1035] uppercase tracking-tight">SmartCoach AI</p>
+                <p className="text-[10px] text-[#1A1035]/60 font-bold uppercase tracking-widest flex items-center gap-1 mt-0.5"><span className="w-2 h-2 bg-[#00C9A7] border border-[#1A1035] rounded-full inline-block"></span> Online</p>
               </div>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-white">
             {messages.length === 0 && (
               <div className="text-center py-6">
-                <p className="text-2xl mb-2">👋</p>
-                <p className="text-sm text-gray-400 mb-4">Hi! I&apos;m your AI Placement Coach. Ask me anything about improving your scores.</p>
-                <div className="space-y-2">
+                <p className="text-4xl mb-4">👋</p>
+                <p className="text-sm text-[#1A1035]/80 font-bold mb-6">Hi! I&apos;m your AI Placement Coach. Ask me anything about improving your scores.</p>
+                <div className="space-y-3">
                   {QUICK_PROMPTS.map((prompt, i) => (
-                    <button key={i} onClick={() => sendMessage(prompt)} className="w-full text-left text-xs p-2.5 rounded-xl border border-brand-border hover:border-brand-cyan/40 hover:bg-brand-cyan/5 text-gray-300 transition-all">
+                    <button key={i} onClick={() => sendMessage(prompt)} className="w-full text-left text-xs font-black p-3 rounded-xl border-2 border-[#1A1035] bg-[#F8F7FF] text-[#1A1035] hover:bg-[#EDE9FE] hover:shadow-[3px_3px_0px_#1A1035] hover:-translate-y-0.5 transition-all">
                       💬 {prompt}
                     </button>
                   ))}
@@ -72,14 +72,14 @@ export default function SmartCoachChat({ scores }: Props) {
             )}
             {messages.map(msg => (
               <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user' ? 'bg-brand-cyan/20 text-gray-200 rounded-br-md' : 'bg-brand-surface text-gray-300 rounded-bl-md border border-brand-border/50'}`}>
-                  <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>') }} />
+                <div className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed font-medium border-2 shadow-[2px_2px_0px_#1A1035] ${msg.role === 'user' ? 'bg-[#1A1035] text-white border-[#1A1035] rounded-br-md' : 'bg-[#EDE9FE] text-[#1A1035] border-[#1A1035] rounded-bl-md'}`}>
+                  <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong class="font-black">$1</strong>') }} />
                 </div>
               </div>
             ))}
             {typing && (
               <div className="flex justify-start">
-                <div className="bg-brand-surface p-3 rounded-2xl rounded-bl-md border border-brand-border/50">
+                <div className="bg-[#EDE9FE] p-3 rounded-2xl rounded-bl-md border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035]">
                   <div className="typing-indicator"><span></span><span></span><span></span></div>
                 </div>
               </div>
@@ -88,10 +88,10 @@ export default function SmartCoachChat({ scores }: Props) {
           </div>
 
           {/* Input */}
-          <div className="p-3 border-t border-brand-border">
+          <div className="p-4 border-t-4 border-[#1A1035] bg-[#F8F7FF]">
             <form onSubmit={e => { e.preventDefault(); sendMessage(input); }} className="flex gap-2">
-              <input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask SmartCoach..." className="input-dark flex-1 py-2 px-3 text-sm rounded-xl" />
-              <button type="submit" className="btn-primary py-2 px-4 text-sm rounded-xl">→</button>
+              <input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask SmartCoach..." className="flex-1 py-3 px-4 text-sm font-bold text-[#1A1035] rounded-xl border-2 border-[#1A1035] bg-white focus:outline-none focus:ring-0 focus:border-[#6C47FF] shadow-[inset_0px_2px_4px_rgba(0,0,0,0.05)] placeholder-[#1A1035]/40" />
+              <button type="submit" className="bg-[#6C47FF] py-2 px-4 text-white font-black text-sm rounded-xl border-2 border-[#1A1035] shadow-[2px_2px_0px_#1A1035] hover:shadow-[4px_4px_0px_#1A1035] hover:-translate-y-0.5 transition-all">→</button>
             </form>
           </div>
         </div>

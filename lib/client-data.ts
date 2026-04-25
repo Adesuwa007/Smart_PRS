@@ -136,14 +136,14 @@ export function getImprovementSessions(): ImprovementSession[] {
   try {
     const raw = localStorage.getItem(SESSIONS_KEY);
     if (!raw) {
-      // Pre-seed demo sessions for Arjun Sharma (demo-student)
+      // Pre-seed demo sessions for Student (demo-student)
       const demoSessions: ImprovementSession[] = [
         {
           id: 'demo-sess-1',
           faculty_id: 'fac-1',
-          faculty_name: 'Prof. Ramesh Kumar',
+          faculty_name: 'Faculty',
           student_id: 'demo-student',
-          student_name: 'Arjun Sharma',
+          student_name: 'Student',
           weak_area: 'Soft Skills',
           target_score: 85,
           current_score: 71,
@@ -156,16 +156,16 @@ export function getImprovementSessions(): ImprovementSession[] {
         {
           id: 'demo-sess-2',
           faculty_id: 'fac-1',
-          faculty_name: 'Prof. Ramesh Kumar',
+          faculty_name: 'Faculty',
           student_id: 'demo-student',
-          student_name: 'Arjun Sharma',
+          student_name: 'Student',
           weak_area: 'Aptitude',
           target_score: 90,
           current_score: 82,
           session_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
           agenda: 'Time management, percentages, number series',
           status: 'completed',
-          outcome_notes: 'Arjun showed improvement in time management. Focus on percentage and profit-loss problems next week.',
+          outcome_notes: 'Student showed improvement in time management. Focus on percentage and profit-loss problems next week.',
           outcome_rating: 'Good',
           score_after_session: 86,
           materials: 'Practice here: https://www.indiabix.com/aptitude/questions\nFocus on: Time & Work, Percentages, Number Series',
@@ -182,7 +182,7 @@ export function getImprovementSessions(): ImprovementSession[] {
           user_id: 'demo-student',
           type: 'session_scheduled',
           title: 'New Improvement Session Scheduled',
-          message: 'Prof. Ramesh Kumar scheduled a Soft Skills session in 3 days',
+          message: 'Faculty scheduled a Soft Skills session in 3 days',
           meet_link: 'https://meet.google.com/abc-defg-hij',
           read: false,
           created_at: new Date().toISOString()

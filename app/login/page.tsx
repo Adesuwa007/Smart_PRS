@@ -8,18 +8,18 @@ import toast, { Toaster } from 'react-hot-toast';
 const DEMO_ACCOUNTS = [
   {
     email: 'student@demo.com', password: 'Demo@1234',
-    role: 'student', name: 'Arjun Sharma', plan: 'free',
+    role: 'student', name: 'Student', plan: 'pro',
     redirect: '/dashboard/student', label: 'Student',
   },
   {
     email: 'faculty@demo.com', password: 'Demo@1234',
-    role: 'faculty', name: 'Prof. Ramesh Kumar', plan: 'pro',
+    role: 'faculty', name: 'Faculty', plan: 'pro',
     redirect: '/dashboard/faculty', label: 'Faculty',
   },
   {
-    email: 'admin@demo.com', password: 'Demo@1234',
-    role: 'admin', name: 'Dr. Suresh Nayak', plan: 'pro',
-    redirect: '/dashboard/admin', label: 'Admin / TPO',
+    email: 'user@demo.com', password: 'Demo@1234',
+    role: 'admin', name: 'User', plan: 'pro',
+    redirect: '/dashboard/admin', label: 'User',
   },
 ];
 
@@ -82,52 +82,91 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen gradient-mesh flex items-center justify-center px-4">
+    <div className="min-h-screen flex bg-white font-sans">
       <Toaster position="top-center" />
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-cyan to-brand-purple flex items-center justify-center text-white font-bold">S</div>
-            <span className="text-2xl font-bold text-white">Smart<span className="text-brand-cyan">PRS</span></span>
+      
+      {/* Left Side - Branding (Hidden on Mobile) */}
+      <div className="hidden lg:flex w-1/2 bg-[#F8F7FF] border-r-4 border-[#1A1035] flex-col justify-between p-12 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#1A1035 2px, transparent 2px)', backgroundSize: '30px 30px' }}></div>
+        
+        <div className="relative z-10">
+          <Link href="/" className="inline-flex items-center gap-3 mb-16 hover:-translate-y-1 transition-transform">
+            <div className="w-12 h-12 rounded-xl bg-white border-4 border-[#1A1035] flex items-center justify-center text-[#1A1035] font-black text-xl shadow-[4px_4px_0px_#6C47FF]">S</div>
+            <span className="text-3xl font-black text-[#1A1035] uppercase tracking-tighter">Smart<span className="text-[#6C47FF]">PRS</span></span>
           </Link>
-          <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-          <p className="text-sm text-gray-400">Sign in to your placement readiness dashboard</p>
+          
+          <h1 className="text-5xl font-black text-[#1A1035] leading-tight mb-6 uppercase tracking-tight">
+            Ready to <span className="inline-block bg-[#00C9A7] px-2 border-4 border-[#1A1035] shadow-[4px_4px_0px_#1A1035] -rotate-2">dominate</span><br/>
+            your placements?
+          </h1>
+          <p className="text-xl font-bold text-[#1A1035]/60 max-w-md">
+            The ultimate neo-brutalist dashboard for student placement readiness and analytics.
+          </p>
         </div>
 
-        <div className="glass-card p-8">
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Email</label>
-              <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="input-dark" placeholder="you@college.edu" required />
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1.5">Password</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="input-dark" placeholder="••••••••" required />
-            </div>
-            <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-3 text-base disabled:opacity-50">
-              {loading ? 'Signing in...' : 'Sign In'}
-            </button>
-          </form>
-
-          <div className="mt-6 pt-6 border-t border-brand-border">
-            <p className="text-xs text-gray-500 mb-3 text-center">Quick Demo Login</p>
-            <div className="space-y-2">
-              {DEMO_ACCOUNTS.map(acc => (
-                <button key={acc.email} onClick={() => quickLogin(acc)} className="w-full text-left p-3 rounded-xl border border-brand-border hover:border-brand-cyan/40 hover:bg-brand-surface transition-all flex items-center justify-between group">
-                  <div>
-                    <p className="text-sm text-white font-medium">{acc.label}</p>
-                    <p className="text-xs text-gray-500">{acc.email}</p>
-                  </div>
-                  <span className="text-xs text-gray-600 group-hover:text-brand-cyan transition">→</span>
-                </button>
-              ))}
-            </div>
+        <div className="relative z-10 grid grid-cols-2 gap-4">
+          <div className="bg-white border-4 border-[#1A1035] p-4 shadow-[4px_4px_0px_#1A1035] rounded-xl transform hover:-rotate-2 transition-transform">
+            <div className="text-[#6C47FF] font-black text-3xl mb-1">98%</div>
+            <div className="text-sm font-bold text-[#1A1035] uppercase tracking-wider">Placement Rate</div>
+          </div>
+          <div className="bg-[#00C9A7] border-4 border-[#1A1035] p-4 shadow-[4px_4px_0px_#1A1035] rounded-xl transform hover:rotate-2 transition-transform">
+            <div className="text-[#1A1035] font-black text-3xl mb-1">50k+</div>
+            <div className="text-sm font-bold text-[#1A1035] uppercase tracking-wider">Assessments</div>
           </div>
         </div>
+      </div>
 
-        <p className="text-center mt-6 text-sm text-gray-500">
-          Don&apos;t have an account? <Link href="/signup" className="text-brand-cyan hover:underline">Sign up</Link>
-        </p>
+      {/* Right Side - Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white relative">
+        <div className="w-full max-w-md">
+          <div className="lg:hidden text-center mb-10">
+            <Link href="/" className="inline-flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#1A1035] flex items-center justify-center text-[#1A1035] font-black shadow-[2px_2px_0px_#6C47FF]">S</div>
+              <span className="text-2xl font-black text-[#1A1035] uppercase tracking-tighter">Smart<span className="text-[#6C47FF]">PRS</span></span>
+            </Link>
+          </div>
+
+          <div className="mb-10 text-center lg:text-left">
+            <h2 className="text-3xl font-black text-[#1A1035] mb-2 uppercase tracking-tight">Welcome Back</h2>
+            <p className="text-sm font-bold text-[#1A1035]/50">Sign in to your placement readiness dashboard</p>
+          </div>
+
+          <div className="bg-white border-4 border-[#1A1035] p-8 shadow-[8px_8px_0px_#1A1035] rounded-2xl relative">
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div>
+                <label className="block text-xs font-black text-[#1A1035] uppercase tracking-wider mb-2">Email</label>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full bg-[#F8F7FF] border-2 border-[#1A1035] rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] focus:border-[#6C47FF] focus:shadow-[4px_4px_0px_#6C47FF] focus:-translate-y-1 transition-all outline-none" placeholder="you@college.edu" required />
+              </div>
+              <div>
+                <label className="block text-xs font-black text-[#1A1035] uppercase tracking-wider mb-2">Password</label>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-[#F8F7FF] border-2 border-[#1A1035] rounded-xl px-4 py-3 text-sm font-bold text-[#1A1035] focus:border-[#6C47FF] focus:shadow-[4px_4px_0px_#6C47FF] focus:-translate-y-1 transition-all outline-none" placeholder="••••••••" required />
+              </div>
+              <button type="submit" disabled={loading} className="w-full bg-[#1A1035] text-white font-black uppercase tracking-wider py-4 rounded-xl border-2 border-[#1A1035] shadow-[4px_4px_0px_#6C47FF] hover:shadow-[6px_6px_0px_#6C47FF] hover:-translate-y-1 transition-all disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_#6C47FF]">
+                {loading ? 'Signing in...' : 'Sign In 🚀'}
+              </button>
+            </form>
+
+            <div className="mt-8 pt-8 border-t-4 border-[#1A1035]/10 border-dashed">
+              <p className="text-xs font-black text-[#1A1035]/40 uppercase tracking-wider mb-4 text-center">Quick Demo Login</p>
+              <div className="space-y-3">
+                {DEMO_ACCOUNTS.map(acc => (
+                  <button key={acc.email} onClick={() => quickLogin(acc)} className="w-full text-left p-4 rounded-xl border-2 border-[#1A1035]/20 hover:border-[#1A1035] hover:bg-[#F8F7FF] hover:shadow-[4px_4px_0px_#1A1035] hover:-translate-y-1 transition-all flex items-center justify-between group bg-white">
+                    <div>
+                      <p className="text-sm font-black text-[#1A1035]">{acc.label}</p>
+                      <p className="text-xs font-bold text-[#1A1035]/50">{acc.email}</p>
+                    </div>
+                    <span className="text-[#6C47FF] font-black text-xl group-hover:translate-x-1 transition-transform">→</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <p className="text-center mt-8 text-sm font-bold text-[#1A1035]/50">
+            Don&apos;t have an account? <Link href="/signup" className="text-[#6C47FF] font-black hover:underline underline-offset-4">Sign up</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

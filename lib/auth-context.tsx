@@ -38,9 +38,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const demoPlan = localStorage.getItem('demoPlan');
 
     if (demoRole && demoName) {
+      let mappedDemoName = demoName;
+      if (demoName.includes('Arjun')) mappedDemoName = 'Student';
+      if (demoName.includes('Ramesh')) mappedDemoName = 'Faculty';
+      if (demoName.includes('Suresh') || demoName.includes('Recruiter')) mappedDemoName = 'User';
+
       const demoUser: AuthUser = {
         id: 'demo-' + demoRole,
-        name: demoName,
+        name: mappedDemoName,
         email: demoEmail || '',
         role: demoRole as 'student' | 'faculty' | 'admin',
         plan: (demoPlan as 'free' | 'pro' | 'enterprise') || 'pro',
@@ -65,9 +70,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (profile) {
+          let mappedRealName = profile.name;
+          if (profile.name?.includes('Arjun')) mappedRealName = 'Student';
+          if (profile.name?.includes('Ramesh')) mappedRealName = 'Faculty';
+          if (profile.name?.includes('Suresh') || profile.name?.includes('Recruiter')) mappedRealName = 'User';
+
           const realUser: AuthUser = {
             id: session.user.id,
-            name: profile.name,
+            name: mappedRealName,
             email: profile.email,
             role: profile.role,
             plan: profile.plan || 'free',

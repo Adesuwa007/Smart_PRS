@@ -123,8 +123,8 @@ function ensureLoggedInStudent(students: UnifiedStudent[]): UnifiedStudent[] {
   const hasById = students.some(s => s.id === authUser.id);
 
   if (authUser.role === 'student' && !hasByName && !hasByEmail && !hasById) {
-    const arjun = students.find(s => s.name === 'Arjun Sharma');
-    const fallback = arjun || students[0];
+    const demoStudent = students.find(s => s.name === 'Student');
+    const fallback = demoStudent || students[0];
     if (!fallback) return students;
     return [
       {
