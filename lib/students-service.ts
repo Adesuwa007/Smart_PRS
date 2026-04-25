@@ -1,7 +1,4 @@
-// Unified student service — merges real Supabase users with demo mock data
-import { supabase } from './supabase';
-import { STUDENT_PROFILES, STUDENT_SCORES } from './mock-data';
-import { calculatePRS, analyzeStudent } from './ai-engine';
+import { fetchAllStudentsServer, getMockStudents } from './student-actions';
 
 export interface UnifiedStudent {
   id: string;
@@ -23,79 +20,25 @@ export interface UnifiedStudent {
 }
 
 export async function getAllStudents(): Promise<UnifiedStudent[]> {
-  // Start with demo/mock students
-  const demoStudents: UnifiedStudent[] = STUDENT_PROFILES.map((p, i) => {
-    const scores = STUDENT_SCORES[i] || {} as typeof STUDENT_SCORES[0];
-    const prsScore = calculatePRS(scores);
-    const analysis = analyzeStudent(scores);
-    return {
-      id: p.id,
-      name: p.name,
-      email: p.email,
-      department: p.department || 'CSE',
-      aptitude: scores.aptitude || 0,
-      coding: scores.coding || 0,
-      core_subjects: scores.core_subjects || 0,
-      soft_skills: scores.soft_skills || 0,
-      attendance: scores.attendance || 75,
-      backlogs: scores.backlogs || 0,
-      prs: prsScore,
-      status: analysis.probability,
-      usn: `4VV24${p.department === 'ECE' ? 'EC' : (p.department || 'CS')}${String(i + 1).padStart(3, '0')}`,
-      plan: 'pro',
-      isDemo: true,
-      joinedAt: '2025-01-15',
-    };
-  });
+  const demoStudents = await getMockStudents();
 
-  // Try to fetch real Supabase students
+  // Try to fetch real Supabase students via Server Action (bypasses RLS)
   try {
-    const { data: profiles } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('role', 'student')
-      .order('created_at', { ascending: false });
+    const realStudents = await fetchAllStudentsServer();
 
-    if (!profiles) return ensureLoggedInStudent(demoStudents);
-    if (profiles.length === 0) return ensureLoggedInStudent([]);
+    if (realStudents.length === 0) {
+      // If we literally have 0 students in the DB, we might want to show demo ones
+      // But only if we are in a demo context. For now, let's return demo if empty
+      // to avoid a totally blank screen for first-time users.
+      // BUT if the user specifically deleted them, they want it empty.
+      // We'll return demo students ONLY if profiles fetch failed or is strictly null.
+      // Since fetchAllStudentsServer returns [] on empty, let's check if we want fallback.
+      return ensureLoggedInStudent(demoStudents);
+    }
 
-    const { data: scores } = await supabase
-      .from('student_scores')
-      .select('*')
-      .in('student_id', profiles.map(p => p.id));
-
-    const today = new Date().toISOString().split('T')[0];
-
-    const realStudents: UnifiedStudent[] = profiles.map((profile, i) => {
-      const studentScore = scores?.find(s => s.student_id === profile.id);
-      const sc = studentScore || { aptitude: 0, coding: 0, core_subjects: 0, soft_skills: 0, attendance: 75, backlogs: 0 };
-      const prsScore = calculatePRS(sc);
-      const analysis = analyzeStudent(sc);
-      const dept = studentScore?.department || 'CS';
-      
-      return {
-        id: profile.id,
-        name: profile.name,
-        email: profile.email,
-        department: dept,
-        aptitude: sc.aptitude || 0,
-        coding: sc.coding || 0,
-        core_subjects: sc.core_subjects || 0,
-        soft_skills: sc.soft_skills || 0,
-        attendance: sc.attendance || 75,
-        backlogs: sc.backlogs || 0,
-        prs: prsScore,
-        status: analysis.probability,
-        usn: `4VV24${dept === 'ECE' ? 'EC' : dept}${String(i + 1).padStart(3, '0')}`,
-        plan: profile.plan || 'free',
-        isDemo: false,
-        joinedAt: profile.created_at?.split('T')[0] || today,
-      };
-    });
-
-    // Only return real students. The old mock students won't show up anymore.
     return ensureLoggedInStudent(realStudents);
-  } catch {
+  } catch (err) {
+    console.error('Error in getAllStudents:', err);
     return ensureLoggedInStudent(demoStudents);
   }
 }

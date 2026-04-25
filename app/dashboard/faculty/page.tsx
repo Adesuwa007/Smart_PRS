@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import { STUDENT_SCORES, STUDENT_PROFILES } from '@/lib/mock-data';
 import { calculateBatchStats } from '@/lib/ai-engine';
 import BatchBarChart from '@/components/charts/BatchBarChart';
 import { getAllStudents, subscribeToStudentUpdates, type UnifiedStudent } from '@/lib/students-service';
@@ -14,11 +13,22 @@ import type { MeetingRecord, ImprovementSession } from '@/types';
 export default function FacultyDashboard() {
   const { user } = useAuth();
   const router = useRouter();
-  const statsInput = STUDENT_SCORES.map((s, i) => ({ scores: s, department: STUDENT_PROFILES[i]?.department }));
-  const stats = calculateBatchStats(statsInput);
-
+  
   const [students, setStudents] = useState<UnifiedStudent[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const statsInput = students.map(s => ({ 
+    scores: {
+      aptitude: s.aptitude,
+      coding: s.coding,
+      core_subjects: s.core_subjects,
+      soft_skills: s.soft_skills,
+      attendance: s.attendance,
+      backlogs: s.backlogs,
+    }, 
+    department: s.department 
+  }));
+  const stats = calculateBatchStats(statsInput);
   const [meetings, setMeetings] = useState<MeetingRecord[]>([]);
   const [meetingForm, setMeetingForm] = useState({ studentId: '', date: '', time: '', agenda: '', notes: '', link: '' });
   const [impSessions, setImpSessions] = useState<ImprovementSession[]>([]);

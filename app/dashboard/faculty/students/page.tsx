@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getAllStudents, subscribeToStudentUpdates, type UnifiedStudent } from '@/lib/students-service';
 import { getStudentPortfolio } from '@/lib/client-data';
-import { analyzeStudent } from '@/lib/ai-engine';
 import { useAuth } from '@/lib/auth-context';
 import { useEffect } from 'react';
 
@@ -18,12 +17,10 @@ const PRS_FILTERS = [
 type PrsFilter = (typeof PRS_FILTERS)[number]['key'];
 
 export default function FacultyStudentsPage() {
-  const { user } = useAuth();
   const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllStudents().then(data => { setAllStudents(data); setLoading(false); });
+    getAllStudents().then(data => { setAllStudents(data); });
     const sub = subscribeToStudentUpdates(() => getAllStudents().then(setAllStudents));
     return () => { sub.unsubscribe(); };
   }, []);
@@ -161,7 +158,7 @@ export default function FacultyStudentsPage() {
               <div className="flex items-center justify-between border-b-4 border-[#1A1035]/10 pb-4">
                 <h3 className="text-xl font-black text-[#1A1035] uppercase tracking-tight flex items-center gap-3">
                   {selectedStudent.name} — PRS Breakdown
-                  <span className="text-xs font-bold text-[#1A1035]/40 tracking-widest mt-1">{(selectedStudent as any).usn || `4VV24${selectedStudent.department === 'ECE' ? 'EC' : (selectedStudent.department || 'CS')}001`}</span>
+                  <span className="text-xs font-bold text-[#1A1035]/40 tracking-widest mt-1">{(selectedStudent as unknown as { usn?: string }).usn || `4VV24${selectedStudent.department === 'ECE' ? 'EC' : (selectedStudent.department || 'CS')}001`}</span>
                 </h3>
                 <button onClick={() => setSelectedStudentId(null)} className="text-[#1A1035] hover:text-[#FF4D6D] transition-colors">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>

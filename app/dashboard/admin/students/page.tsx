@@ -21,10 +21,9 @@ const BLANK: NewStudent = { name: '', department: 'CS', aptitude: 75, coding: 75
 
 export default function AdminStudentsPage() {
   const [allStudents, setAllStudents] = useState<UnifiedStudent[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllStudents().then(data => { setAllStudents(data); setLoading(false); });
+    getAllStudents().then(data => { setAllStudents(data); });
     const sub = subscribeToStudentUpdates(() => getAllStudents().then(setAllStudents));
     return () => { sub.unsubscribe(); };
   }, []);
