@@ -94,7 +94,7 @@ export default function DashboardLayout({ role, children }: Props) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-[#1A1035] truncate">{displayName}</p>
-              <p className="text-[10px] font-bold text-[#1A1035]/50 uppercase tracking-wider">{displayRole === 'admin' ? 'User' : displayRole}</p>
+              <p className="text-[10px] font-bold text-[#1A1035]/50 uppercase tracking-wider">{displayRole}</p>
             </div>
             <button onClick={logout} className="text-[#1A1035]/40 hover:text-[#FF4D6D] transition" title="Logout">⏻</button>
           </div>
@@ -108,7 +108,7 @@ export default function DashboardLayout({ role, children }: Props) {
           <div className="flex items-center gap-4">
             <button onClick={() => setSidebarOpen(true)} className="md:hidden text-[#1A1035] p-2">☰</button>
             <h2 className="text-lg font-black text-[#1A1035] hidden sm:block">
-              Welcome back 👋
+              Welcome back, {displayName} 👋
             </h2>
           </div>
           <div className="flex items-center gap-4">

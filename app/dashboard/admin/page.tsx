@@ -154,7 +154,7 @@ export default function AdminDashboard() {
         {/* KPI Row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Total Students', value: totalStudents, icon: '👥', color: 'text-[#6C47FF]', bg: 'bg-[#EDE9FE]' },
+            { label: 'Total Students', value: totalStudents, subLabel: `${students.length - realCount} demo + ${realCount} real accounts`, icon: '👥', color: 'text-[#6C47FF]', bg: 'bg-[#EDE9FE]' },
             { label: 'Average PRS', value: avgPRS, icon: '📊', color: 'text-[#00C9A7]', bg: 'bg-[#D1FAE5]' },
             { label: 'Placement Ready', value: placementReady, icon: '🎯', color: 'text-[#FFB347]', bg: 'bg-[#FEF3C7]' },
             { label: 'At-Risk (<50 PRS)', value: atRisk, icon: '⚠️', color: 'text-[#FF4D6D]', bg: 'bg-[#FCE7F3]' },
@@ -164,7 +164,10 @@ export default function AdminDashboard() {
                 <p className="text-xs font-black text-[#1A1035]/50 uppercase tracking-wider">{c.label}</p>
                 <div className="w-10 h-10 rounded-xl bg-white border-2 border-[#1A1035] flex items-center justify-center text-lg shadow-[2px_2px_0px_#1A1035]">{c.icon}</div>
               </div>
-              <p className={`text-4xl font-black ${c.color}`}>{c.value}</p>
+              <div className="flex flex-col">
+                <p className={`text-4xl font-black ${c.color}`}>{c.value}</p>
+                {c.subLabel && <p className="text-[10px] font-bold text-[#1A1035]/60 mt-2 uppercase tracking-widest">{c.subLabel}</p>}
+              </div>
             </div>
           ))}
         </div>

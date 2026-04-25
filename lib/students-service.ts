@@ -1,4 +1,7 @@
-import { fetchAllStudentsServer, getMockStudents } from './student-actions';
+// Unified student service — always fetches FRESH from Supabase
+import { supabase } from './supabase';
+import { STUDENT_PROFILES, STUDENT_SCORES } from './mock-data';
+import { calculatePRS, analyzeStudent } from './ai-engine';
 
 export interface UnifiedStudent {
   id: string;
@@ -19,74 +22,113 @@ export interface UnifiedStudent {
   joinedAt: string;
 }
 
-export async function getAllStudents(): Promise<UnifiedStudent[]> {
-  const demoStudents = await getMockStudents();
-
-  // Try to fetch real Supabase students via Server Action (bypasses RLS)
-  try {
-    const realStudents = await fetchAllStudentsServer();
-
-    if (realStudents.length === 0) {
-      // If we literally have 0 students in the DB, we might want to show demo ones
-      // But only if we are in a demo context. For now, let's return demo if empty
-      // to avoid a totally blank screen for first-time users.
-      // BUT if the user specifically deleted them, they want it empty.
-      // We'll return demo students ONLY if profiles fetch failed or is strictly null.
-      // Since fetchAllStudentsServer returns [] on empty, let's check if we want fallback.
-      return ensureLoggedInStudent(demoStudents);
-    }
-
-    return ensureLoggedInStudent(realStudents);
-  } catch (err) {
-    console.error('Error in getAllStudents:', err);
-    return ensureLoggedInStudent(demoStudents);
+// Helper: format name properly even if it looks like an email fragment
+function formatName(name: string, email: string): string {
+  if (!name || name.includes('@') || name.length < 3) {
+    return email.split('@')[0].replace(/[0-9]/g, '').trim() || 'Student';
   }
+  return name;
 }
 
-function ensureLoggedInStudent(students: UnifiedStudent[]): UnifiedStudent[] {
-  if (typeof window === 'undefined') return students;
+// Helper: generate display USN from email or usn field
+function displayUSN(student: { usn?: string; email?: string; department?: string }, index: number): string {
+  if (student.usn && !student.usn.includes('@')) return student.usn;
+  if (student.email) return student.email.split('@')[0].toUpperCase();
+  const dept = student.department === 'ECE' ? 'EC' : (student.department || 'CS');
+  return `4VV24${dept}${String(index + 1).padStart(3, '0')}`;
+}
 
-  let currentAuthUser: { id: string; name: string; email: string; role: string } | null = null;
+// Build demo students from mock data
+function buildDemoStudents(): UnifiedStudent[] {
+  return STUDENT_PROFILES.map((p, i) => {
+    const scores = STUDENT_SCORES[i] || {} as typeof STUDENT_SCORES[0];
+    const prsScore = calculatePRS(scores);
+    const analysis = analyzeStudent(scores);
+    return {
+      id: p.id,
+      name: p.name,
+      email: p.email,
+      department: p.department || 'CSE',
+      aptitude: scores.aptitude || 0,
+      coding: scores.coding || 0,
+      core_subjects: scores.core_subjects || 0,
+      soft_skills: scores.soft_skills || 0,
+      attendance: scores.attendance || 75,
+      backlogs: scores.backlogs || 0,
+      prs: prsScore,
+      status: analysis.probability,
+      usn: `4VV24${p.department === 'ECE' ? 'EC' : (p.department || 'CS')}${String(i + 1).padStart(3, '0')}`,
+      plan: 'pro',
+      isDemo: true,
+      joinedAt: '2025-01-15',
+    };
+  });
+}
+
+export async function getAllStudents(): Promise<UnifiedStudent[]> {
+  // Always clear any cached/stale student data
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.removeItem('cached_students');
+      localStorage.removeItem('registered_users');
+    } catch { /* SSR safe */ }
+  }
+
+  const demoStudents = buildDemoStudents();
+
+  // Always fetch FRESH from Supabase — never use cached data
   try {
-    currentAuthUser = JSON.parse(localStorage.getItem('smartprsCurrentAuthUser') || 'null') as {
-      id: string;
-      name: string;
-      email: string;
-      role: string;
-    } | null;
-  } catch {
-    currentAuthUser = null;
+    const { data: profiles, error } = await supabase
+      .from('profiles')
+      .select('*, student_scores(*)')
+      .eq('role', 'student')
+      .order('created_at', { ascending: false });
+
+    // If error or null → return only demo students
+    if (error || !profiles) {
+      console.warn('Supabase fetch failed, showing demo only:', error?.message);
+      return demoStudents;
+    }
+
+    // Map real profiles → UnifiedStudent format
+    const realStudents: UnifiedStudent[] = profiles.map((profile, i) => {
+      // student_scores is joined via select('*, student_scores(*)')
+      const scoreArr = profile.student_scores;
+      const sc = (Array.isArray(scoreArr) ? scoreArr[0] : scoreArr) || {
+        aptitude: 50, coding: 50, core_subjects: 50, soft_skills: 50,
+        attendance: 75, backlogs: 0, department: 'CS',
+      };
+      const prsScore = calculatePRS(sc);
+      const analysis = analyzeStudent(sc);
+      const dept = sc.department || 'CS';
+
+      return {
+        id: profile.id,
+        name: formatName(profile.name, profile.email),
+        email: profile.email,
+        department: dept,
+        aptitude: sc.aptitude || 0,
+        coding: sc.coding || 0,
+        core_subjects: sc.core_subjects || 0,
+        soft_skills: sc.soft_skills || 0,
+        attendance: sc.attendance || 75,
+        backlogs: sc.backlogs || 0,
+        prs: prsScore,
+        status: analysis.probability,
+        usn: displayUSN({ usn: profile.usn, email: profile.email, department: dept }, i),
+        plan: profile.plan || 'free',
+        isDemo: false,
+        joinedAt: profile.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
+      };
+    });
+
+    // Return real students PLUS demo students (always show both)
+    return [...realStudents, ...demoStudents];
+  } catch (err) {
+    console.error('Error in getAllStudents:', err);
+    // On failure → show ONLY demo students
+    return demoStudents;
   }
-
-  const demoRole = localStorage.getItem('demoRole');
-  const authUser = currentAuthUser || {
-    id: 'demo-student',
-    name: localStorage.getItem('demoName') || 'Student',
-    email: localStorage.getItem('demoEmail') || 'student@demo.com',
-    role: demoRole || '',
-  };
-
-  const hasByName = students.some(s => s.name.toLowerCase() === authUser.name.toLowerCase());
-  const hasByEmail = students.some(s => s.email.toLowerCase() === authUser.email.toLowerCase());
-  const hasById = students.some(s => s.id === authUser.id);
-
-  if (authUser.role === 'student' && !hasByName && !hasByEmail && !hasById) {
-    const demoStudent = students.find(s => s.name === 'Student');
-    const fallback = demoStudent || students[0];
-    if (!fallback) return students;
-    return [
-      {
-        ...fallback,
-        id: authUser.id || 'demo-student',
-        name: authUser.name || fallback.name,
-        email: authUser.email || fallback.email,
-        isDemo: authUser.id.startsWith('demo-') || fallback.isDemo,
-      },
-      ...students,
-    ];
-  }
-
-  return students;
 }
 
 export function subscribeToStudentUpdates(callback: () => void) {

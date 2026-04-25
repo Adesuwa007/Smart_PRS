@@ -187,7 +187,9 @@ export default function StudentDashboard() {
               <span className="text-sm font-bold text-[#1A1035]/40 tracking-widest mt-2 uppercase bg-[#F8F7FF] border-2 border-[#1A1035]/10 px-2 py-0.5 rounded-lg">{allStudents.find(s => s.id === user?.id || s.email === user?.email)?.usn || '4VV24CS001'}</span>
             </h1>
             <p className="text-[#1A1035]/60 font-bold text-sm mt-1">
-              {prs.score >= 80
+              {prs.score === 47 && scores.aptitude === 50 && scores.coding === 50
+                ? "Welcome! Your starting baseline score is set. Take assessments to improve your PRS score."
+                : prs.score >= 80
                 ? `You're in the top ${Math.round((rank / allStudents.length) * 100)}% of your batch! 🏆`
                 : `You're ${pointsToProduct.toFixed(0)} points away from Product Tier — keep pushing! 🚀`}
             </p>

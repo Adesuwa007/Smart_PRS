@@ -229,9 +229,9 @@ export default function AdminStudentsPage() {
                       <td className="py-4 px-4 text-[#1A1035]/60 font-black border-r-4 border-[#1A1035]">{(page - 1) * PER_PAGE + idx + 1}</td>
                       <td className="py-4 px-4">
                         <div className="flex flex-col">
-                          <span className="text-[#1A1035] font-black">{s.name}</span>
-                          <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5">
-                            {s.usn || `4VV24${s.department === 'ECE' ? 'EC' : (s.department || 'CS')}${String(idx + 1).padStart(3, '0')}`}
+                          <span className="text-[#1A1035] font-black">{s.name.includes('@') || s.name.length < 3 ? s.email.split('@')[0].replace(/[0-9]/g, '').trim() || 'Student' : s.name}</span>
+                          <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5" title={s.email}>
+                            {s.usn && !s.usn.includes('@') ? s.usn : s.email.split('@')[0].toUpperCase()}
                           </span>
                         </div>
                       </td>

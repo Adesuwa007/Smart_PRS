@@ -62,10 +62,10 @@ export default function SignupPage() {
     if (role === 'student') {
       await supabase.from('student_scores').insert({
         student_id: data.user.id,
-        aptitude: 0,
-        coding: 0,
-        core_subjects: 0,
-        soft_skills: 0,
+        aptitude: 50,
+        coding: 50,
+        core_subjects: 50,
+        soft_skills: 50,
         attendance: 75,
         backlogs: 0,
         department: department || 'CSE',

@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { getAllStudents, subscribeToStudentUpdates, type UnifiedStudent } from '@/lib/students-service';
 import { getStudentPortfolio } from '@/lib/client-data';
-import { useAuth } from '@/lib/auth-context';
+
 import { useEffect } from 'react';
 
 const PRS_FILTERS = [
@@ -120,8 +120,8 @@ export default function FacultyStudentsPage() {
                   >
                     <td className="py-4 px-4 border-r-4 border-[#1A1035]">
                       <div className="flex flex-col">
-                        <span className="text-[#1A1035] font-black">{s.name}</span>
-                        <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5">{s.usn}</span>
+                        <span className="text-[#1A1035] font-black">{s.name.includes('@') || s.name.length < 3 ? s.email.split('@')[0].replace(/[0-9]/g, '').trim() || 'Student' : s.name}</span>
+                        <span className="text-[10px] font-bold text-[#1A1035]/40 uppercase mt-0.5" title={s.email}>{s.usn && !s.usn.includes('@') ? s.usn : s.email.split('@')[0].toUpperCase()}</span>
                       </div>
                     </td>
                     <td className="py-4 px-4"><span className="bg-white text-[#1A1035] border-2 border-[#1A1035] shadow-[2px_2px_0px_#6C47FF] px-2 py-1 text-xs font-black uppercase tracking-wider rounded">{s.department}</span></td>

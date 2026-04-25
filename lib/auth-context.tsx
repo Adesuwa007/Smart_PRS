@@ -70,14 +70,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           .single();
 
         if (profile) {
-          let mappedRealName = profile.name;
-          if (profile.name?.includes('Arjun')) mappedRealName = 'Student';
-          if (profile.name?.includes('Ramesh')) mappedRealName = 'Faculty';
-          if (profile.name?.includes('Suresh') || profile.name?.includes('Recruiter')) mappedRealName = 'User';
-
+          // Use the REAL name from profile — never rename real users
           const realUser: AuthUser = {
             id: session.user.id,
-            name: mappedRealName,
+            name: profile.name || profile.email?.split('@')[0] || 'User',
             email: profile.email,
             role: profile.role,
             plan: profile.plan || 'free',
@@ -85,6 +81,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           };
           setUser(realUser);
           persistAuthUser(realUser);
+          // Write identity keys for other components
+          localStorage.setItem('userId', realUser.id);
+          localStorage.setItem('userName', realUser.name);
         }
       }
       setLoading(false);
